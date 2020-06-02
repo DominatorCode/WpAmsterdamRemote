@@ -781,7 +781,7 @@ add_action('admin_footer', function() {
         echo '
 		<script>		
 
-			/*let $boxes = jQuery("#postbox-container-2 .postbox .acf-field-tab").parent(".inside");
+			let $boxes = jQuery("#postbox-container-2 .postbox .acf-field-tab").parent(".inside");
 
 			if ( $boxes.length > 1 ) {
 
@@ -793,7 +793,7 @@ add_action('admin_footer', function() {
 			    });				
 			}
 			
-			jQuery("[id^=acf-group_] > h2 > span").text("Model parameters");*/
+			jQuery("[id^=acf-group_] > h2 > span").text("Model parameters");
 			<!--  insert model meta box in ACF tabs  -->
 			jQuery(\'#image-gallery-meta-box\').appendTo(\'#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee4927b68c\');
 			jQuery( "#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee4927b68c > div.acf-label" ).remove();
@@ -849,17 +849,22 @@ function acf_active_global() {
 add_action( 'init', 'acf_active_global' );
 
 /* Modmy */
-add_filter('acf/settings/show_admin', '__return_false');
+//add_filter('acf/settings/show_admin', '__return_false');
 
-//add_filter('acf/fields/taxonomy/query', 'my_acf_fields_taxonomy_query', 10, 3);
-function my_acf_fields_taxonomy_query( $args, $field, $post_id ) {
+$arr_id_taxonomy = [37, 40, 44, 68, 57, 8, 9, 10];
+$arr_name_fields = ['netherlands', 'germany', 'france', 'body', 'height','bust', 'age', 'hair'];
+$index_field = 0;
 
-    // Show 40 terms per AJAX call.
-    $args['number'] = 2;
+foreach ($arr_id_taxonomy as $id_taxonomy) {
+    $tax_filter = function ($args) use ($id_taxonomy) {
+        $args['child_of'] = $id_taxonomy;
+        // Order by most used.
+        $args['orderby'] = 'count';
+        $args['order'] = 'DESC';
 
-    // Order by most used.
-    $args['orderby'] = 'count';
-    $args['order'] = 'DESC';
+        return $args;
+    };
+    add_filter('acf/fields/taxonomy/wp_list_categories/name=' . $arr_name_fields[$index_field], $tax_filter, 10, 2);
 
-    return $args;
+    $index_field++;
 }
