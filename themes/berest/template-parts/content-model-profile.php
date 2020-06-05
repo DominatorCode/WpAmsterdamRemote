@@ -30,51 +30,108 @@
        				<div class="block-div">
        					<h3>STATISTICS</h3>
        					<div class="content-div">
-       						<table cellpadding="0" cellspacing="0" width="100%">
-                                <?php /*Girls params data*/
-                                $fields = acf_get_fields('375');
+       						<table>
+                                <?php /**
+                                 * @param string $name_cf
+                                 * @param string $value_cf
+                                 * @return void
+                                 */
+                                function PrintCfTable(string $name_cf, string $value_cf): void
+                                {
+                                    // printing in two column way name | value
+                                    echo '<tr>';
+                                    echo '<td class="text-left">' . $name_cf . ":" . '</td>';
+                                    echo '<td class="text-right">' . $value_cf . '</td>';
+                                    echo '</tr>';
 
-                                $values = get_fields();
-
-                                if( $fields ) {
-                                    $show_next = true;
-                                    foreach ($fields as $field) {
-                                        $value = $values[$field['name']];
-                                        if ($show_next) {
-                                            // the field is not a true false field
-                                            // but the last true false field was true
-                                            // output field
-                                            echo '<tr>';
-                                            echo '<td>' . $field['label'] . '</td>';
-                                            echo '<td class="text-right">' . $value . '</td>';
-                                            echo '</tr>';
-                                        }
-                                    }
                                 }
-                                ?>
-                                <?php /*Girls location*/
-                                $fields = acf_get_fields('392');
 
-                                $values = get_fields();
+                                /**
+                                 * @param array $subfields
+                                 * @param string $name_taxonomy
+                                 * @return array
+                                 */
+                                function AcfExtractDataAndPrint(array $subfields, string $name_taxonomy): array
+                                {
+                                    $result = [];
+                                    foreach ($subfields as $key => $value) {
+                                        if (!empty($value)) {
+                                            $field = get_sub_field_object($key);
 
-                                if( $fields ) {
-                                    $show_next = true;
-                                    foreach ($fields as $field) {
-                                        $value = $values[$field['name']];
-                                        if ($show_next) {
-                                            //print_r($value);
-                                            echo '<tr>';
-                                            echo '<td>' . $field['label'] . '</td>';
-                                            $cities = '';
-                                            foreach ($value as $lValue) {
-                                                $cities = $cities . get_term( $lValue )->name . ' ';
+
+                                            // select all child tax ids for current parent tax from common taxes array
+                                            // Setup blank array
+                                            $arr_ids = array();
+                                            foreach ($field['value'] as $id_child) {
+                                                // get parent tax name of child term
+                                                $child_term = get_term($id_child, $name_taxonomy);
+                                                $term_parent = get_term($child_term->parent, $name_taxonomy)->name;
+
+                                                // compare parent name with loop parent
+                                                if (strcmp($term_parent, $field['label']) == 0)
+                                                    array_push($arr_ids, $id_child);
                                             }
-                                            echo '<td class="text-right">' . $cities. '</td>';
-                                            echo '</tr>';
+
+                                            $get_terms_args = array(
+                                                'taxonomy' => $name_taxonomy,
+                                                'hide_empty' => 0,
+                                                'include' => $arr_ids,
+                                            );
+                                            // get selected terms
+                                            $terms = get_terms($get_terms_args);
+
+                                            $value_term = '';
+                                            if ($terms) :
+
+                                                foreach ($terms as $term) :
+                                                    $value_term .= $term->name . ', ';
+                                                endforeach;
+                                                $value_term = rtrim($value_term, ', ');
+
+
+
+                                            endif;
+                                            $result[] = ['name_field' => $field['label'], 'name_value' => $value_term];
                                         }
                                     }
+                                    return array($result);
                                 }
-                                ?>
+
+                                if ( have_rows( 'group_statistics' ) ) : /* mycode */
+                                    while ( have_rows( 'group_statistics' ) ) : the_row();
+                                        if( $subfields = get_row() ) {
+                                            $name_taxonomy = 'statistics'; // name of using taxonomy
+                                            $arr_data_acf = AcfExtractDataAndPrint($subfields, $name_taxonomy);
+
+                                            // print results
+                                            foreach ($arr_data_acf[0] as $row_data_acf) {
+                                                PrintCfTable($row_data_acf['name_field'], $row_data_acf['name_value']);
+
+                                            }
+
+                                        }
+                                    endwhile;
+                                endif; ?>
+                                <?php if ( have_rows( 'group_location' ) ) : ?>
+                                    <?php while ( have_rows( 'group_location' ) ) : the_row();
+                                        if( $subfields = get_row() ) {
+                                            $name_taxonomy = 'location'; // name of using taxonomy
+                                            $arr_data_acf = AcfExtractDataAndPrint($subfields, $name_taxonomy);
+                                            // print results
+                                            $value_locations = '';
+
+                                            $namePrintTax = "Location";
+                                            foreach ($arr_data_acf[0] as $row_data_acf)
+                                                $value_locations .= $row_data_acf['name_field'] . ', ' . $row_data_acf['name_value'] . ', ';
+                                            }
+                                        $value_locations = rtrim($value_locations, ', ');
+                                        echo '<tr>';
+                                        echo '<td class="text-left">' . $namePrintTax . ":" . '</td>';
+                                        echo '<td class="text-right">' . $value_locations . '</td>';
+                                        echo '</tr>';
+
+                                    endwhile; ?>
+                                <?php endif; ?>
        						</table>
        					</div>
        				</div>
@@ -82,12 +139,12 @@
        				<div class="block-div">
        					<h3>RATES</h3>
        					<div class="content-div">
-       						<table cellpadding="0" cellspacing="0" width="100%">
+       						<table>
        							<thead>
        								<tr>
        									<th></th>
 										<th class="text-right"> <strong>IN</strong>  </th>
-										<th width="30%" class="text-right"><strong>OUT</strong></th>
+										<th class="text-right"><strong>OUT</strong></th>
        								</tr>
        							</thead>
        							<tbody>
@@ -158,26 +215,21 @@
        					<h3>SERVICES</h3>
        					<div class="content-div">
        						<table>
-                                <?php if ( have_rows( 'group_services' ) ) : /* mycode */?>
-                                    <?php while ( have_rows( 'group_services' ) ) : the_row();
-                                        if( $subfields = get_row() ) { ?>
-                                        <ul>
-                                            <?php
+                                <?php if ( have_rows( 'group_services' ) ) : /* mycode */
+                                    while ( have_rows( 'group_services' ) ) : the_row();
+                                        if( $subfields = get_row() ) {
                                             foreach ($subfields as $key => $value) {
-                                                if ( !empty($value) ) { $field = get_sub_field_object( $key ); ?>
-                                                    <?php
+                                                if ( !empty($value) ) {
+                                                    $field = get_sub_field_object( $key );
                                                     echo '<tr>';
-                                                    echo '<td class="text-left">' . $field['label'] . '</td>';
+                                                    echo '<td class="text-left">' . $field['label'] . ":" . '</td>';
                                                     echo '<td class="text-right">' . $value. '</td>';
                                                     echo '</tr>';
-                                                    ?>
-                                                <?php }
-                                            } ?>
-                                        </ul>
-                                        <?php }
-                                    endwhile; ?>
-                                <?php endif; ?>
-       							 
+                                                 }
+                                            }
+                                         }
+                                        endwhile;
+                                    endif; ?>
        						</table>
        					</div>
        				</div>
@@ -190,9 +242,9 @@
 
 
 
-	</div><!-- .entry-content -->
+
 
 	<footer class="entry-footer">
 		<?php berest_entry_footer(); ?>
 	</footer><!-- .entry-footer -->
-</article><!-- #post-<?php the_ID(); ?> -->
+<!-- #post-<?php the_ID(); ?> -->
