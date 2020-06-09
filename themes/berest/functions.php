@@ -849,17 +849,18 @@ function acf_active_global() {
 add_action( 'init', 'acf_active_global' );
 
 /* Modmy */
-//add_filter('acf/settings/show_admin', '__return_false');
+add_filter('acf/settings/show_admin', '__return_false');
 
-$arr_id_taxonomy = [37, 40, 44, 68, 57, 8, 9, 10];
-$arr_name_fields = ['netherlands', 'germany', 'france', 'body', 'height','bust', 'age', 'hair'];
+$arr_id_taxonomy = [37, 40, 44, 68, 57, 8, 9, 10, 18, 19, 20, 21, 22];
+$arr_name_fields = ['netherlands', 'germany', 'france', 'body', 'height','bust', 'age'
+    , 'hair', 'cim', 'cif', 'greek', 'daty', 'a_level'];
 $index_field = 0;
 
 foreach ($arr_id_taxonomy as $id_taxonomy) {
     $tax_filter = function ($args) use ($id_taxonomy) {
         $args['child_of'] = $id_taxonomy;
         // Order by most used.
-        $args['orderby'] = 'count';
+        $args['order_by'] = 'count';
         $args['order'] = 'DESC';
 
         return $args;
@@ -868,3 +869,6 @@ foreach ($arr_id_taxonomy as $id_taxonomy) {
 
     $index_field++;
 }
+
+
+// add unset screen options for right sidebar
