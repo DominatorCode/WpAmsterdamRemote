@@ -849,25 +849,56 @@ function acf_active_global() {
 add_action( 'init', 'acf_active_global' );
 
 /* Modmy */
-add_filter('acf/settings/show_admin', '__return_false');
+//add_filter('acf/settings/show_admin', '__return_false');
 
-$arr_id_taxonomy = [37, 40, 44, 68, 57, 8, 9, 10, 18, 19, 20, 21, 22];
-$arr_name_fields = ['netherlands', 'germany', 'france', 'body', 'height','bust', 'age'
-    , 'hair', 'cim', 'cif', 'greek', 'daty', 'a_level'];
-$index_field = 0;
+// apply filters for ACF groups that using type 'Taxonomy'
+// Step 1: get all registered custom taxonomies list
+add_action('init', 'wpse29164_applyAcfFilters');
+function wpse29164_applyAcfFilters()
+{
+    $args = array(
+        'public' => true,
+        '_builtin' => false
+    );
+    $output = 'names'; // or objects
+    $operator = 'and'; // 'and' or 'or'
+    $taxonomies = get_taxonomies($args, $output, $operator);
 
-foreach ($arr_id_taxonomy as $id_taxonomy) {
-    $tax_filter = function ($args) use ($id_taxonomy) {
-        $args['child_of'] = $id_taxonomy;
-        // Order by most used.
-        $args['order_by'] = 'count';
-        $args['order'] = 'DESC';
+// Step 2: Get custom taxonomies name and id from list
+    if ($taxonomies) {
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_terms([
+                'taxonomy' => $taxonomy,
+                'hide_empty' => false,
+                'parent' => 0,
+            ]);
+            // Step 3: Apply filter for each term
+            foreach ($terms as $term_single) {
+                $id_term = $term_single->term_id;
+                $name_term = $term_single->slug;
 
-        return $args;
-    };
-    add_filter('acf/fields/taxonomy/wp_list_categories/name=' . $arr_name_fields[$index_field], $tax_filter, 10, 2);
+                $tax_filter = function ($args) use ($id_term) {
+                    $args['child_of'] = $id_term;
+                    // Order by most used.
+                    $args['order_by'] = 'count';
+                    $args['order'] = 'DESC';
 
-    $index_field++;
+                    return $args;
+                };
+                add_filter('acf/fields/taxonomy/wp_list_categories/name=' . $name_term, $tax_filter, 10, 2);
+            }
+        }
+    }
+}
+
+function GetListAcfGroups(){
+
+    $fields = get_fields();
+
+    if( $fields )
+        foreach( $fields as $name => $value ) {
+            echo $name;
+        }
 }
 
 
