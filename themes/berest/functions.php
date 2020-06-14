@@ -443,9 +443,7 @@ function GalleryFeed(){
 
         // This is where the magic happens
         $no_of_paginations = ceil($count / $per_page);
-
-        // This is where the magic happens
-        $no_of_paginations = ceil($count / $per_page);
+		
 
         if ($cur_page >= 7) {
             $start_loop = $cur_page - 3;
@@ -849,20 +847,14 @@ function acf_active_global() {
 add_action( 'init', 'acf_active_global' );
 
 /* Modmy */
-//add_filter('acf/settings/show_admin', '__return_false');
+add_filter('acf/settings/show_admin', '__return_false');
 
 // apply filters for ACF groups that using type 'Taxonomy'
 // Step 1: get all registered custom taxonomies list
 add_action('init', 'wpse29164_applyAcfFilters');
 function wpse29164_applyAcfFilters()
 {
-    $args = array(
-        'public' => true,
-        '_builtin' => false
-    );
-    $output = 'names'; // or objects
-    $operator = 'and'; // 'and' or 'or'
-    $taxonomies = get_taxonomies($args, $output, $operator);
+    $taxonomies = GetListCustomTaxonomies('names');
 
 // Step 2: Get custom taxonomies name and id from list
     if ($taxonomies) {
@@ -874,18 +866,7 @@ function wpse29164_applyAcfFilters()
             ]);
             // Step 3: Apply filter for each term
             foreach ($terms as $term_single) {
-                $id_term = $term_single->term_id;
-                $name_term = $term_single->slug;
-
-                $tax_filter = function ($args) use ($id_term) {
-                    $args['child_of'] = $id_term;
-                    // Order by most used.
-                    $args['order_by'] = 'count';
-                    $args['order'] = 'DESC';
-
-                    return $args;
-                };
-                add_filter('acf/fields/taxonomy/wp_list_categories/name=' . $name_term, $tax_filter, 10, 2);
+                CreateAcfFilterField($term_single);
             }
         }
     }
@@ -901,5 +882,194 @@ function GetListAcfGroups(){
         }
 }
 
+// additing ACF local forms to admin panel
+add_action('init', 'wpse29164_GenerateLocalAdminAcfForms');
+function wpse29164_GenerateLocalAdminAcfForms() {
+    if (function_exists('acf_add_local_field_group')):
+        // Generate fields with Custom Taxonomies
+        // get list of custom taxonomies
+        $taxonomies = GetListCustomTaxonomies('objects');
+        $arr_fields = array();
+        if ($taxonomies) {
+            //var_dump($taxonomies);
+            foreach ($taxonomies as $taxonomy) {
+
+                // generate Tab field
+                $arr_fields[] = CreateAcfTabField($taxonomy->label);
+
+                // generate group field
+                $arr_taxonomy_field = array('taxonomy', $taxonomy);
+                $arr_fields[] = CreateAcfGroupField('Choose ' . $taxonomy->name,
+                    $taxonomy->label, $arr_taxonomy_field);
+
+            }
+        }
+
+        // Generate "Rates" field
+        $arr_fields[] = CreateAcfTabField('Rates');
+
+        // Generate "Model Image Field"
+        $arr_fields[] = CreateAcfTabField('Model Image');
+
+        acf_add_local_field_group(array(
+            'key' => 'group_5eb935640cddd',
+            'title' => 'Model Parameters',
+            'fields' => $arr_fields,
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'directory',
+                    ),
+                ),
+            ),
+            'menu_order' => 1,
+            'position' => 'normal',
+            'style' => 'default',
+            'label_placement' => 'top',
+            'instruction_placement' => 'label',
+            'hide_on_screen' => '',
+            'active' => true,
+            'description' => '',
+        ));
+
+    endif;
+}
+
+
+/**
+ * @param string $typeField
+ * @return array
+ */
+function GetListCustomTaxonomies($typeField) : array
+{
+    $args = array(
+        'public' => true,
+        '_builtin' => false
+    );
+    $output = $typeField; // or objects
+    $operator = 'and'; // 'and' or 'or'
+    return get_taxonomies($args, $output, $operator);
+}
+
+function CreateAcfTabField($nameTabField) : array
+{
+    return array(
+        'key' => 'field_' . uniqid('', true),
+        'label' => $nameTabField,
+        'name' => '',
+        'type' => 'tab',
+        'instructions' => '',
+        'required' => 0,
+        'conditional_logic' => 0,
+        'wrapper' => array(
+            'width' => '',
+            'class' => '',
+            'id' => '',
+        ),
+        'placement' => 'top',
+        'endpoint' => 0,
+    );
+}
+
+/**
+ * @param string $nameLabel
+ * @param string $nameField
+ * @param array $typeDataField
+ * @return array
+ */
+function CreateAcfGroupField($nameLabel, $nameField, $typeDataField) : array
+{
+    // generate sub fields for group
+    $arr_fields_sub = array();
+
+    // if sub field type is 'taxonomy' then split it by parent term on columns
+    if (($typeDataField[0] === 'taxonomy') && $typeDataField[1]) {
+
+        // get all parent terms for current taxonomy
+        $terms = get_terms([
+            'taxonomy' => $typeDataField[1]->name,
+            'hide_empty' => false,
+            'parent' => 0,
+        ]);
+
+        // generate columns for each parent term
+        foreach ($terms as $term) {
+
+            $arr_fields_sub[] = CreateAcfField($term->name,$term->slug,
+                'checkbox', array($typeDataField[0],$typeDataField[1]->name));
+
+        }
+    }
+
+    return array(
+        'key' => 'field_' . uniqid('', true),
+        'label' => $nameLabel,
+        'name' => 'group_' . $nameField,
+        'type' => 'group',
+        'instructions' => '',
+        'required' => 0,
+        'conditional_logic' => 0,
+        'wrapper' => array(
+            'width' => '',
+            'class' => '',
+            'id' => '',
+        ),
+        'layout' => 'block',
+        'sub_fields' => $arr_fields_sub);
+}
+
+function CreateAcfField($nameLabel, $nameField, $typeSelect, $typeTermField) : array
+{
+    return array(
+        'key' => 'field_' . uniqid('', true),
+        'label' => $nameLabel,
+        'name' => $nameField,
+        'type' => $typeTermField[0],
+        'instructions' => '',
+        'required' => 0,
+        'conditional_logic' => 0,
+        'wrapper' => array(
+            'width' => '',
+            'class' => 'acf-responsive',
+            'id' => '',
+        ),
+        'taxonomy' => $typeTermField[1],
+        'field_type' => $typeSelect,
+        'add_term' => 1,
+        'save_terms' => 1,
+        'load_terms' => 1,
+        'return_format' => 'id',
+        'multiple' => 0,
+        'allow_null' => 0,
+    );
+}
+
+function CreateAcfFilterField($taxonomyUsed)
+{
+    $id_term = $taxonomyUsed->term_id;
+    $name_term = $taxonomyUsed->slug;
+
+    $tax_filter = static function ($args) use ($id_term) {
+        $args['child_of'] = $id_term;
+        // Order by most used.
+        $args['order_by'] = 'count';
+        $args['order'] = 'DESC';
+
+        return $args;
+    };
+    add_filter('acf/fields/taxonomy/wp_list_categories/name=' . $name_term, $tax_filter, 10, 2);
+}
 
 // add unset screen options for right sidebar
+//add_filter('default_hidden_meta_boxes','hide_meta_box',10,2);
+function hide_meta_box($hidden, $screen) {
+    //make sure we are dealing with the correct screen
+    if ( ('post' == $screen->base) && ('directory' == $screen->id) ){
+        //lets hide everything
+        $hidden = array('postexcerpt','slugdiv','postcustom','trackbacksdiv', 'commentstatusdiv', 'commentsdiv', 'authordiv', 'revisionsdiv');
+        $hidden[] ='my_custom_meta_box';//for custom meta box, enter the id used in the add_meta_box() function.
+    }
+    return $hidden;
+}
