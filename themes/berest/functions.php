@@ -895,7 +895,7 @@ function wpse29164_GenerateLocalAdminAcfForms() {
             foreach ($taxonomies as $taxonomy) {
 
                 // generate Tab field
-                $arr_fields[] = CreateAcfTabField($taxonomy->label);
+                $arr_fields[] = CreateAcfTabField($taxonomy->name, $taxonomy->label);
 
                 // generate group field
                 $arr_taxonomy_field = array('taxonomy', $taxonomy);
@@ -906,10 +906,20 @@ function wpse29164_GenerateLocalAdminAcfForms() {
         }
 
         // Generate "Rates" field
-        $arr_fields[] = CreateAcfTabField('Rates');
+        $arr_fields[] = CreateAcfTabField('rates_tab', 'Rates', 'field_5ecee45e7b68a');
+        $arr_fields[] = CreateAcfTextField('Model Rates', 'model_rates', '', array(
+            'width' => '',
+            'class' => '',
+            'id' => 'fakeField',
+        ));
 
         // Generate "Model Image Field"
-        $arr_fields[] = CreateAcfTabField('Model Image');
+        $arr_fields[] = CreateAcfTabField('image_tab', 'Image','field_5ecee4837b68b');
+        $arr_fields[] = CreateAcfTextField('Model Images', 'model_images', '', array(
+            'width' => '',
+            'class' => '',
+            'id' => 'fakeField',
+        ));
 
         acf_add_local_field_group(array(
             'key' => 'group_5eb935640cddd',
@@ -939,6 +949,7 @@ function wpse29164_GenerateLocalAdminAcfForms() {
 
 
 /**
+ *
  * @param string $typeField
  * @return array
  */
@@ -953,12 +964,22 @@ function GetListCustomTaxonomies($typeField) : array
     return get_taxonomies($args, $output, $operator);
 }
 
-function CreateAcfTabField($nameTabField) : array
+/**
+ * Generates Acf tab field
+ * @param string $nameField
+ * @param string $labelField
+ * @param string $idField
+ * @return array
+ */
+function CreateAcfTabField($nameField, $labelField, $idField = '') : array
 {
+    if (empty($idField)) {
+        $idField = 'field_' . uniqid('', true);
+    }
     return array(
-        'key' => 'field_' . uniqid('', true),
-        'label' => $nameTabField,
-        'name' => '',
+        'key' => $idField,
+        'label' => $labelField,
+        'name' => $nameField,
         'type' => 'tab',
         'instructions' => '',
         'required' => 0,
@@ -997,7 +1018,7 @@ function CreateAcfGroupField($nameLabel, $nameField, $typeDataField) : array
         // generate columns for each parent term
         foreach ($terms as $term) {
 
-            $arr_fields_sub[] = CreateAcfField($term->name,$term->slug,
+            $arr_fields_sub[] = CreateAcfFieldTaxonomy($term->name,$term->slug,
                 'checkbox', array($typeDataField[0],$typeDataField[1]->name));
 
         }
@@ -1020,7 +1041,14 @@ function CreateAcfGroupField($nameLabel, $nameField, $typeDataField) : array
         'sub_fields' => $arr_fields_sub);
 }
 
-function CreateAcfField($nameLabel, $nameField, $typeSelect, $typeTermField) : array
+/**
+ * @param string $nameLabel
+ * @param string $nameField
+ * @param string $typeSelect
+ * @param array $typeTermField
+ * @return array
+ */
+function CreateAcfFieldTaxonomy($nameLabel, $nameField, $typeSelect, $typeTermField) : array
 {
     return array(
         'key' => 'field_' . uniqid('', true),
@@ -1046,6 +1074,48 @@ function CreateAcfField($nameLabel, $nameField, $typeSelect, $typeTermField) : a
     );
 }
 
+/**
+ * Generates ACF Text field
+ * @param string $label
+ * Field label
+ * @param string $name
+ * @param string $keyId
+ * @param array $wrapper
+ * ['width']
+ * ['class']
+ * ['id']
+ * @return array
+ */
+function CreateAcfTextField($label, $name, $keyId = '', $wrapper = array(
+    'width' => '',
+    'class' => '',
+    'id' => '',
+)) : array
+{
+    if (empty($keyId)) {
+        $keyId = 'field_' . uniqid('', true);
+    }
+    return array(
+        'key' => $keyId,
+        'label' => $label,
+        'name' => $name,
+        'type' => 'text',
+        'instructions' => '',
+        'required' => 0,
+        'conditional_logic' => 0,
+        'wrapper' => $wrapper,
+        'default_value' => '',
+        'placeholder' => '',
+        'prepend' => '',
+        'append' => '',
+        'maxlength' => '',
+    );
+}
+
+/**
+ * Filter to display only specific child terms for taxonomy field
+ * @param object $taxonomyUsed
+ */
 function CreateAcfFilterField($taxonomyUsed)
 {
     $id_term = $taxonomyUsed->term_id;
@@ -1054,8 +1124,8 @@ function CreateAcfFilterField($taxonomyUsed)
     $tax_filter = static function ($args) use ($id_term) {
         $args['child_of'] = $id_term;
         // Order by most used.
-        $args['order_by'] = 'count';
-        $args['order'] = 'DESC';
+        /*$args['order_by'] = 'count';
+        $args['order'] = 'DESC';*/
 
         return $args;
     };
@@ -1073,3 +1143,12 @@ function hide_meta_box($hidden, $screen) {
     }
     return $hidden;
 }
+
+// add custom JS to interact with and modify ACF fields and settings
+function my_admin_enqueue_scripts() {
+
+    wp_enqueue_script( 'my-admin-js', get_template_directory_uri() . '/js/acf-me.js', array(), '1.0.0', true );
+
+}
+
+add_action('acf/input/admin_enqueue_scripts', 'my_admin_enqueue_scripts');
