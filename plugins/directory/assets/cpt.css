@@ -1,3 +1,16 @@
 div.acf-responsive {
     display: inline-table;
 }
+
+/*li.active > a {
+    color: red;
+
+}*/
+
+#fakeField {
+    display: none;
+}
+
+#advanced-sortables, #image-gallery-meta-box {
+    display: none;
+}
