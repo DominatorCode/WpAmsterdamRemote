@@ -641,13 +641,13 @@ function getList( $term_id, $taxonomy , $args_main ) {
 				if (!is_array($value_q))
 					continue;
 
-				if ( in_array($value_q['terms'], $term_list) || ($taxonomy == 'services' && $value_q['taxonomy'] == 'services') ) { // 
+				if ( in_array($value_q['terms'], $term_list, true) || (($taxonomy === 'services') && ($value_q['taxonomy'] === 'services')) ) { //
 					unset($tax_query[$key_i]);
 				}
 			}
 		}
 
-		array_push ( $tax_query, args_generator ($value->term_id, $taxonomy) );
+		$tax_query[] = args_generator($value->term_id, $taxonomy);
 
 		$args['tax_query'] = $tax_query;
 
@@ -771,41 +771,8 @@ function BookNow() {
     }
 
 }
-/* Modmy Merge ACF tabs*/
-add_action('admin_footer', function() {
 
-    $screen = get_current_screen();
-    if ( $screen->base == 'post' ) {
-        echo '
-		<script>		
-
-			let $boxes = jQuery("#postbox-container-2 .postbox .acf-field-tab").parent(".inside");
-
-			if ( $boxes.length > 1 ) {
-
-			    let $firstBox = $boxes.first();
-
-			    $boxes.not($firstBox).each(function(){
-				    jQuery(this).children().appendTo($firstBox);
-				    jQuery(this).parent(".postbox").remove();				    
-			    });				
-			}
-			
-			jQuery("[id^=acf-group_] > h2 > span").text("Model parameters");
-			<!--  insert model meta box in ACF tabs  -->
-			jQuery(\'#image-gallery-meta-box\').appendTo(\'#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee4927b68c\');
-			jQuery( "#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee4927b68c > div.acf-label" ).remove();
-			jQuery( "#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee4927b68c > div.acf-input" ).remove();
-                
-            <!--  insert rates meta box in ACF tabs -->
-			jQuery(\'#rates-1\').appendTo(\'#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee45e7b68a\');
-			jQuery( "#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee45e7b68a > div.acf-label" ).remove();
-			jQuery( "#acf-group_5eb935640cddd > div > div.acf-field.acf-field-text.acf-field-5ecee45e7b68a > div.acf-input" ).remove();
-			
-		</script>';
-    }
-
-});
+// ----------------------------------------------------------------------------------
 
 /* Modmy */
 add_action( 'admin_menu', 'remove_author_metabox' );
@@ -841,13 +808,14 @@ function acf_active_global() {
     if (class_exists('ACF')) {
         $is_acf_active = true;
     }
-    else
+    else {
         $is_acf_active = false;
+    }
 }
 add_action( 'init', 'acf_active_global' );
 
-/* Modmy */
-add_filter('acf/settings/show_admin', '__return_false');
+/* Modmy disable admin ACF menu */
+//add_filter('acf/settings/show_admin', '__return_false');
 
 // apply filters for ACF groups that using type 'Taxonomy'
 // Step 1: get all registered custom taxonomies list
@@ -876,31 +844,42 @@ function GetListAcfGroups(){
 
     $fields = get_fields();
 
-    if( $fields )
-        foreach( $fields as $name => $value ) {
+    if( $fields ) {
+        foreach ($fields as $name => $value) {
             echo $name;
         }
+    }
 }
 
-// additing ACF local forms to admin panel
-add_action('init', 'wpse29164_GenerateLocalAdminAcfForms');
+// add ACF local forms to admin panel
+require get_template_directory() . '/inc/acf-local-fields/AcfLocalGroupField.php';
+add_action('init', 'wpse29164_GenerateLocalAdminAcfForms'); //admin_init
 function wpse29164_GenerateLocalAdminAcfForms() {
     if (function_exists('acf_add_local_field_group')):
         // Generate fields with Custom Taxonomies
         // get list of custom taxonomies
         $taxonomies = GetListCustomTaxonomies('objects');
+
+        // contains generated code for fields
         $arr_fields = array();
+
+        // contains group id and used taxonomy for generated group fields
+        $arrKeysGroup = array();
+        $arrIdsGroup = array('field_5ecee20b4d4d4','field_5ed68d558a1b3','field_5ed0367dbe93f');
+        $indexGroupsTabs = 0;
         if ($taxonomies) {
-            //var_dump($taxonomies);
             foreach ($taxonomies as $taxonomy) {
 
                 // generate Tab field
                 $arr_fields[] = CreateAcfTabField($taxonomy->name, $taxonomy->label);
 
-                // generate group field
-                $arr_taxonomy_field = array('taxonomy', $taxonomy);
-                $arr_fields[] = CreateAcfGroupField('Choose ' . $taxonomy->name,
-                    $taxonomy->label, $arr_taxonomy_field);
+                // generate group field code
+                $cFieldGroup = new AcfLocalGroupField('Choose ' . $taxonomy->label,
+                    $taxonomy->name, $arrIdsGroup[$indexGroupsTabs++]);
+                $arr_fields[] = $cFieldGroup->arrFieldsGenerated;
+
+                // save group id
+                $arrKeysGroup[] = $cFieldGroup->idKey;
 
             }
         }
@@ -921,7 +900,7 @@ function wpse29164_GenerateLocalAdminAcfForms() {
             'id' => 'fakeField',
         ));
 
-        acf_add_local_field_group(array(
+        $arrDataGroupExport = array(
             'key' => 'group_5eb935640cddd',
             'title' => 'Model Parameters',
             'fields' => $arr_fields,
@@ -942,7 +921,56 @@ function wpse29164_GenerateLocalAdminAcfForms() {
             'hide_on_screen' => '',
             'active' => true,
             'description' => '',
-        ));
+        );
+        acf_add_local_field_group($arrDataGroupExport);
+
+        //acf_write_json_field_group($arrDataGroupExport);
+
+        // generate taxonomy sub fields for created groups
+        if ($taxonomies) {
+            $indexGroup = 0;
+            foreach ($taxonomies as $taxonomy) {
+                // if sub field type is 'taxonomy' then split it by parent term on columns
+                // get all parent terms for current taxonomy
+                $terms = get_terms([
+                    'taxonomy' => $taxonomy->name,
+                    'hide_empty' => false,
+                    'parent' => 0,
+                ]);
+
+                // generate columns for each parent term
+                $indexTerm = 0;
+                foreach ($terms as $term) {
+                    CreateAcfSubFieldTaxonomy($term->name,$term->slug,
+                        'checkbox', $taxonomy->name, $arrKeysGroup[$indexGroup], $arrKeysGroup[$indexGroup] . $indexTerm++);
+                }
+                $indexGroup++;
+            }
+        }
+
+        /*acf_add_local_field( array(
+            'key' => $arrKeysGroup[0] . 1,
+            'label' => 'Germany',
+            'name' => 'germany',
+            'type' => 'taxonomy',
+            'parent' => $arrKeysGroup[0],
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => 'acf-responsive',
+                'id' => '',
+            ),
+            'taxonomy' => 'location',
+            'field_type' => 'checkbox',
+            'add_term' => 1,
+            'save_terms' => 1,
+            'load_terms' => 1,
+            'return_format' => 'id',
+            'multiple' => 0,
+            'allow_null' => 0,
+        ) );*/
 
     endif;
 }
@@ -962,6 +990,15 @@ function GetListCustomTaxonomies($typeField) : array
     $output = $typeField; // or objects
     $operator = 'and'; // 'and' or 'or'
     return get_taxonomies($args, $output, $operator);
+}
+
+/**
+ * Generates unique key id for ACF fields
+ * @return string
+ */
+function GenerateUniqueKeyId() : string
+{
+    return uniqid('field_', false);
 }
 
 /**
@@ -997,64 +1034,25 @@ function CreateAcfTabField($nameField, $labelField, $idField = '') : array
 /**
  * @param string $nameLabel
  * @param string $nameField
- * @param array $typeDataField
- * @return array
+ * @param string $typeMethodSelect
+ * [checkbox][multiselect][etc]
+ * @param string $nameTaxonomy
+ * @param string $parentKey
+ * @param string $keyId
  */
-function CreateAcfGroupField($nameLabel, $nameField, $typeDataField) : array
+function CreateAcfSubFieldTaxonomy($nameLabel, $nameField, $typeMethodSelect, $nameTaxonomy, $parentKey = '', $keyId = '')
 {
-    // generate sub fields for group
-    $arr_fields_sub = array();
-
-    // if sub field type is 'taxonomy' then split it by parent term on columns
-    if (($typeDataField[0] === 'taxonomy') && $typeDataField[1]) {
-
-        // get all parent terms for current taxonomy
-        $terms = get_terms([
-            'taxonomy' => $typeDataField[1]->name,
-            'hide_empty' => false,
-            'parent' => 0,
-        ]);
-
-        // generate columns for each parent term
-        foreach ($terms as $term) {
-
-            $arr_fields_sub[] = CreateAcfFieldTaxonomy($term->name,$term->slug,
-                'checkbox', array($typeDataField[0],$typeDataField[1]->name));
-
-        }
+    // check key id
+    if (empty($keyId)) {
+        $keyId =  GenerateUniqueKeyId();
     }
 
-    return array(
-        'key' => 'field_' . uniqid('', true),
-        'label' => $nameLabel,
-        'name' => 'group_' . $nameField,
-        'type' => 'group',
-        'instructions' => '',
-        'required' => 0,
-        'conditional_logic' => 0,
-        'wrapper' => array(
-            'width' => '',
-            'class' => '',
-            'id' => '',
-        ),
-        'layout' => 'block',
-        'sub_fields' => $arr_fields_sub);
-}
-
-/**
- * @param string $nameLabel
- * @param string $nameField
- * @param string $typeSelect
- * @param array $typeTermField
- * @return array
- */
-function CreateAcfFieldTaxonomy($nameLabel, $nameField, $typeSelect, $typeTermField) : array
-{
-    return array(
-        'key' => 'field_' . uniqid('', true),
+    acf_add_local_field( array(
+        'key' => $keyId,
         'label' => $nameLabel,
         'name' => $nameField,
-        'type' => $typeTermField[0],
+        'type' => 'taxonomy',
+        'parent'       => $parentKey,
         'instructions' => '',
         'required' => 0,
         'conditional_logic' => 0,
@@ -1063,15 +1061,17 @@ function CreateAcfFieldTaxonomy($nameLabel, $nameField, $typeSelect, $typeTermFi
             'class' => 'acf-responsive',
             'id' => '',
         ),
-        'taxonomy' => $typeTermField[1],
-        'field_type' => $typeSelect,
+        'taxonomy' => $nameTaxonomy,
+        'field_type' => $typeMethodSelect,
         'add_term' => 1,
         'save_terms' => 1,
         'load_terms' => 1,
         'return_format' => 'id',
         'multiple' => 0,
         'allow_null' => 0,
-    );
+    ) );
+
+
 }
 
 /**
@@ -1150,5 +1150,80 @@ function my_admin_enqueue_scripts() {
     wp_enqueue_script( 'my-admin-js', get_template_directory_uri() . '/js/acf-me.js', array(), '1.0.0', true );
 
 }
-
 add_action('acf/input/admin_enqueue_scripts', 'my_admin_enqueue_scripts');
+
+// ACF json wrk directory
+add_filter('acf/settings/save_json', 'my_acf_json_save_point');
+function my_acf_json_save_point($path)
+{
+    // update path
+    $path = get_stylesheet_directory() . '/acf-json';
+    // return
+    return $path;
+}
+
+// add a new load point (folder) for ACF JSON
+add_filter('acf/settings/load_json', 'my_acf_json_load_point');
+function my_acf_json_load_point( $paths ) {
+
+    // remove original path (optional)
+    unset($paths[0]);
+
+
+    // append path
+    $paths[] = get_stylesheet_directory() . '/acf-json';
+
+
+    // return
+    return $paths;
+
+}
+
+//add_action( 'admin_init', 'article_gamification_sync_acf_fields' );
+function article_gamification_sync_acf_fields() {
+    // vars
+    $groups = acf_get_local_field_groups();
+    $sync   = array();
+    // bail early if no field groups
+    if( empty( $groups ) ) {
+        return;
+    }
+    // find JSON field groups which have not yet been imported
+    foreach( $groups as $group ) {
+
+        $sync[ $group[ 'key' ] ]  = $group;
+    }
+    // bail if no sync needed
+    if( empty( $sync ) ) {
+        return;
+    }
+    $keys = array();
+    echo '|||||||||';
+    foreach( $sync as $key => $v ) { //foreach( $keys as $key ) {
+
+        // append fields
+        if( acf_have_local_fields( $key ) ) {
+
+            $sync[ $key ][ 'fields' ] = acf_get_local_fields(  );
+
+            /*foreach ($sync[$key]['fields'] as $fieldGr) {
+                if ($fieldGr['type'] === 'group') {
+                    var_dump(get_field($fieldGr['key'])); echo '|||||||||';
+
+                }
+                //print_r($fieldGr);
+            }*/
+
+
+
+        }
+
+        echo '|||||| end';
+        // import
+        //$field_group = acf_import_field_group( $sync[ $key ] );
+        //var_dump($field_group);
+    }
+
+
+
+}
