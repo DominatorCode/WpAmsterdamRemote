@@ -815,7 +815,7 @@ function acf_active_global() {
 add_action( 'init', 'acf_active_global' );
 
 /* Modmy disable admin ACF menu */
-//add_filter('acf/settings/show_admin', '__return_false');
+add_filter('acf/settings/show_admin', '__return_false');
 
 // apply filters for ACF groups that using type 'Taxonomy'
 // Step 1: get all registered custom taxonomies list
@@ -856,6 +856,10 @@ require get_template_directory() . '/inc/acf-local-fields/AcfLocalGroupField.php
 add_action('init', 'wpse29164_GenerateLocalAdminAcfForms'); //admin_init
 function wpse29164_GenerateLocalAdminAcfForms() {
     if (function_exists('acf_add_local_field_group')):
+        // root group key id
+        $idKeyRoot = 'group_5eb935640cddd';
+
+
         // Generate fields with Custom Taxonomies
         // get list of custom taxonomies
         $taxonomies = GetListCustomTaxonomies('objects');
@@ -865,17 +869,21 @@ function wpse29164_GenerateLocalAdminAcfForms() {
 
         // contains group id and used taxonomy for generated group fields
         $arrKeysGroup = array();
-        $arrIdsGroup = array('field_5ecee20b4d4d4','field_5ed68d558a1b3','field_5ed0367dbe93f');
+        //$arrIdsGroup = array('field_5ecee20b4d4d4','field_5ed68d558a1b3','field_5ed0367dbe93f');
         $indexGroupsTabs = 0;
+        // generate key id
+        $idKeyGroup = str_replace("group_", "field_", $idKeyRoot);
         if ($taxonomies) {
             foreach ($taxonomies as $taxonomy) {
 
                 // generate Tab field
                 $arr_fields[] = CreateAcfTabField($taxonomy->name, $taxonomy->label);
 
+
+
                 // generate group field code
                 $cFieldGroup = new AcfLocalGroupField('Choose ' . $taxonomy->label,
-                    $taxonomy->name, $arrIdsGroup[$indexGroupsTabs++]);
+                    $taxonomy->name, $idKeyGroup . $indexGroupsTabs++);
                 $arr_fields[] = $cFieldGroup->arrFieldsGenerated;
 
                 // save group id
@@ -901,7 +909,7 @@ function wpse29164_GenerateLocalAdminAcfForms() {
         ));
 
         $arrDataGroupExport = array(
-            'key' => 'group_5eb935640cddd',
+            'key' => $idKeyRoot,
             'title' => 'Model Parameters',
             'fields' => $arr_fields,
             'location' => array(
