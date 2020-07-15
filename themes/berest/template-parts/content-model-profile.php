@@ -6,9 +6,10 @@
  *
  * @package berest
  */
+require_once get_template_directory() . '/inc/acf-local-fields/AcfFrontPageDisplay.php';
+require_once get_template_directory() . '/inc/acf-local-fields/RawFrontPageDisplay.php';
 
-
-
+use DirectoryCustomFields\RawFrontPageDisplay as RawCF;
 ?>
 
 <article>
@@ -31,107 +32,94 @@
        					<h3>STATISTICS</h3>
        					<div class="content-div">
        						<table>
-                                <?php /**
-                                 * @param string $name_cf
-                                 * @param string $value_cf
-                                 * @return void
-                                 */
-                                function PrintCfTable(string $name_cf, string $value_cf): void
-                                {
-                                    // printing in two column way name | value
-                                    echo '<tr>';
-                                    echo '<td class="text-left">' . $name_cf . ":" . '</td>';
-                                    echo '<td class="text-right">' . $value_cf . '</td>';
-                                    echo '</tr>';
+                                <?php
 
-                                }
+                                //<editor-fold desc="statistics data">
+                                $name_taxonomy = 'statistics'; // name of using taxonomy
+                                $idPost = $post->ID;
 
-                                /**
-                                 * @param array $subfields
-                                 * @param string $name_taxonomy
-                                 * @return array
-                                 */
-                                function AcfExtractDataAndPrint(array $subfields, string $name_taxonomy): array
-                                {
-                                    $result = [];
-                                    foreach ($subfields as $key => $value) {
-                                        if (!empty($value)) {
-                                            $field = get_sub_field_object($key);
+                                // get used terms for current post
+                                RawCF::GetCfDataAndPrint($idPost, $name_taxonomy);
+
+                                //</editor-fold>
 
 
-                                            // select all child tax ids for current parent tax from common taxes array
-                                            // Setup blank array
-                                            $arr_ids = array();
-                                            foreach ($field['value'] as $id_child) {
-                                                // get parent tax name of child term
-                                                $child_term = get_term($id_child, $name_taxonomy);
-                                                $term_parent = get_term($child_term->parent, $name_taxonomy)->name;
-
-                                                // compare parent name with loop parent
-                                                if (strcmp($term_parent, $field['label']) == 0)
-                                                    array_push($arr_ids, $id_child);
-                                            }
-
-                                            $get_terms_args = array(
-                                                'taxonomy' => $name_taxonomy,
-                                                'hide_empty' => 0,
-                                                'include' => $arr_ids,
-                                            );
-                                            // get selected terms
-                                            $terms = get_terms($get_terms_args);
-
-                                            $value_term = '';
-                                            if ($terms) :
-
-                                                foreach ($terms as $term) :
-                                                    $value_term .= $term->name . ', ';
-                                                endforeach;
-                                                $value_term = rtrim($value_term, ', ');
-
-
-
-                                            endif;
-                                            $result[] = ['name_field' => $field['label'], 'name_value' => $value_term];
-                                        }
-                                    }
-                                    return array($result);
-                                }
-
-                                if ( have_rows( 'group_statistics' ) ) : /* mycode */
+                                // old code for DB ACF using
+                                /*if ( have_rows( 'group_statistics' ) ) : // mycode
                                     while ( have_rows( 'group_statistics' ) ) : the_row();
                                         if( $subfields = get_row() ) {
-                                            $name_taxonomy = 'statistics'; // name of using taxonomy
-                                            $arr_data_acf = AcfExtractDataAndPrint($subfields, $name_taxonomy);
-
+                                            $arr_data_acf = DirectoryCustomFields\AcfFrontPageDisplay::AcfExtractDataFields($subfields, $name_taxonomy);
                                             // print results
                                             foreach ($arr_data_acf[0] as $row_data_acf) {
-                                                PrintCfTable($row_data_acf['name_field'], $row_data_acf['name_value']);
+                                                DirectoryCustomFields\AcfFrontPageDisplay::PrintCfTable($row_data_acf['name_field'], $row_data_acf['name_value']);
 
                                             }
 
                                         }
                                     endwhile;
-                                endif; ?>
-                                <?php if ( have_rows( 'group_location' ) ) : ?>
-                                    <?php while ( have_rows( 'group_location' ) ) : the_row();
-                                        if( $subfields = get_row() ) {
-                                            $name_taxonomy = 'location'; // name of using taxonomy
-                                            $arr_data_acf = AcfExtractDataAndPrint($subfields, $name_taxonomy);
-                                            // print results
-                                            $value_locations = '';
+                                endif; */
 
-                                            $namePrintTax = "Location";
-                                            foreach ($arr_data_acf[0] as $row_data_acf)
-                                                $value_locations .= $row_data_acf['name_field'] . ', ' . $row_data_acf['name_value'] . ', ';
-                                            }
-                                        $value_locations = rtrim($value_locations, ', ');
-                                        echo '<tr>';
-                                        echo '<td class="text-left">' . $namePrintTax . ":" . '</td>';
-                                        echo '<td class="text-right">' . $value_locations . '</td>';
-                                        echo '</tr>';
 
-                                    endwhile; ?>
-                                <?php endif; ?>
+                                ?>
+
+                                <?php
+                                //<editor-fold desc="Location data display">
+                                $namePrintTax = "Location (Disabled)";
+                                $name_taxonomy = 'location'; // name of using taxonomy
+
+                                //<editor-fold desc="get location taxonomy name">
+                                $args = array(
+                                    'public'   => true,
+                                    'name' => $name_taxonomy
+                                );
+                                $taxonomies = get_taxonomies( $args , 'objects');
+                                // find "location" taxonomy displayed name
+                                if ( $taxonomies ) {
+                                    $namePrintTax = $taxonomies[$name_taxonomy]->labels->name;
+                                }
+                                //</editor-fold>
+
+                                // get used cities
+                                $term_objects = wp_get_post_terms($post->ID, 'location', array('fields' => 'all', 'orderby' => 'parent'));
+//var_dump($term_objects);
+                                // Get Country name for chosen cities
+                                $nameCountryPrevious = '';
+                                $value_locations = '';
+
+                                // make location list with country and cities
+                                foreach ($term_objects as $termCity) {
+                                    // if new country then append its name
+                                    $idParent = $termCity->parent;
+
+                                    // if term is city not a country
+                                    if ($idParent > 0) {
+                                        $nameCountry = get_term_by('id', $idParent, $name_taxonomy)->name;
+
+                                        // check if new country name
+                                        if ($nameCountry !== $nameCountryPrevious) {
+                                            $nameCountryPrevious = '';
+                                        }
+
+                                        if (empty($nameCountryPrevious)) {
+                                            $value_locations .= ', ' . $nameCountry . ': ' . $termCity->name;
+                                            $nameCountryPrevious = $nameCountry;
+                                        }
+                                        else {
+                                            $value_locations .= ', ' . $termCity->name;
+                                        }
+                                    }
+                                }
+
+                                $value_locations = ltrim($value_locations, ', ');
+
+                                // print results
+                                echo '<tr>';
+                                    echo '<td class="text-left">' . $namePrintTax . ":" . '</td>';
+                                    echo '<td class="text-right">' . $value_locations . '</td>';
+                                    echo '</tr>';
+                                //</editor-fold>
+                                ?>
+
        						</table>
        					</div>
        				</div>
@@ -215,21 +203,17 @@
        					<h3>SERVICES</h3>
        					<div class="content-div">
        						<table>
-                                <?php if ( have_rows( 'group_services' ) ) : /* mycode */
-                                    while ( have_rows( 'group_services' ) ) : the_row();
-                                        if( $subfields = get_row() ) {
-                                            foreach ($subfields as $key => $value) {
-                                                if ( !empty($value) ) {
-                                                    $field = get_sub_field_object( $key );
-                                                    echo '<tr>';
-                                                    echo '<td class="text-left">' . $field['label'] . ":" . '</td>';
-                                                    echo '<td class="text-right">' . $value. '</td>';
-                                                    echo '</tr>';
-                                                 }
-                                            }
-                                         }
-                                        endwhile;
-                                    endif; ?>
+                                <?php
+
+                                //<editor-fold desc="services data">
+                                $name_taxonomy = 'services'; // name of using taxonomy
+                                $idPost = $post->ID;
+
+                                RawCF::GetCfDataAndPrint($idPost, $name_taxonomy);
+
+                                //</editor-fold>
+
+                                    ?>
        						</table>
        					</div>
        				</div>
