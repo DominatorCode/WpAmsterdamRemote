@@ -43,23 +43,6 @@ use DirectoryCustomFields\RawFrontPageDisplay as RawCF;
 
                                 //</editor-fold>
 
-
-                                // old code for DB ACF using
-                                /*if ( have_rows( 'group_statistics' ) ) : // mycode
-                                    while ( have_rows( 'group_statistics' ) ) : the_row();
-                                        if( $subfields = get_row() ) {
-                                            $arr_data_acf = DirectoryCustomFields\AcfFrontPageDisplay::AcfExtractDataFields($subfields, $name_taxonomy);
-                                            // print results
-                                            foreach ($arr_data_acf[0] as $row_data_acf) {
-                                                DirectoryCustomFields\AcfFrontPageDisplay::PrintCfTable($row_data_acf['name_field'], $row_data_acf['name_value']);
-
-                                            }
-
-                                        }
-                                    endwhile;
-                                endif; */
-
-
                                 ?>
 
                                 <?php
