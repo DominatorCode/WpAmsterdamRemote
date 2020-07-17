@@ -7,7 +7,17 @@ require get_template_directory() . '/inc/acf-local-fields/AcfLocalGroupField.php
 
 class AcfRootGroupField
 {
+    /**
+     * Path for working directory for ACF json files
+     * @var string
+     */
     public $path_dir_acf = '/acf-json';
+
+    /**
+     *  Root group key id
+     * @var string
+     */
+    public $idKeyRoot = 'group_5eb935640cddd';
 
     /**
      * AcfRootGroupField constructor.
@@ -27,8 +37,6 @@ class AcfRootGroupField
     public function wpse29164_GenerateLocalAdminAcfForms(): void
     {
         if (function_exists('acf_add_local_field_group')):
-            // root group key id
-            $idKeyRoot = 'group_5eb935640cddd';
 
             // Generate fields with Custom Taxonomies
             // get list of custom taxonomies
@@ -41,7 +49,7 @@ class AcfRootGroupField
             $arrKeysGroup = array();
             $indexGroupsTabs = 0;
             // generate key id
-            $idKeyGroup = str_replace("group_", "field_", $idKeyRoot);
+            $idKeyGroup = str_replace("group_", "field_", $this->idKeyRoot);
             if ($taxonomies) {
                 foreach ($taxonomies as $taxonomy) {
 
@@ -59,7 +67,7 @@ class AcfRootGroupField
                 }
             }
 
-            // Generate "Rates" field
+            // Generate "Rates" tab
             $arr_fields[] = $this->CreateAcfTabField('rates_tab', 'Rates', 'field_5ecee45e7b68a');
             $arr_fields[] = $this->CreateAcfTextField('Model Rates', 'model_rates', '', array(
                 'width' => '',
@@ -67,7 +75,7 @@ class AcfRootGroupField
                 'id' => 'fakeField',
             ));
 
-            // Generate "Model Image Field"
+            // Generate "Model Image Field" tab
             $arr_fields[] = $this->CreateAcfTabField('image_tab', 'Image','field_5ecee4837b68b');
             $arr_fields[] = $this->CreateAcfTextField('Model Images', 'model_images', '', array(
                 'width' => '',
@@ -76,7 +84,7 @@ class AcfRootGroupField
             ));
 
             $arrDataGroupExport = array(
-                'key' => $idKeyRoot,
+                'key' => $this->idKeyRoot,
                 'title' => 'Model Parameters',
                 'fields' => $arr_fields,
                 'location' => array(
