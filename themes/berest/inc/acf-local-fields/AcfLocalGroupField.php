@@ -1,7 +1,9 @@
 <?php
 
+use DirectoryCustomFields\AcfBaseField;
+require get_template_directory() . '/inc/acf-local-fields/AcfBaseField.php';
 
-class AcfLocalGroupField
+class AcfLocalGroupField extends AcfBaseField
 {
     public $arrFieldsGenerated;
     public $idKey;
@@ -12,7 +14,7 @@ class AcfLocalGroupField
     {
         // check key id
         if (empty($pIdKey)) {
-            $this->idKey =  GenerateUniqueKeyId();
+            $this->idKey =  $this->GenerateUniqueKeyId();
         }
         else {
             $this->idKey = $pIdKey;
@@ -48,4 +50,5 @@ class AcfLocalGroupField
             'layout' => 'block',
             'sub_fields' => $arr_fields_sub);
     }
+
 }

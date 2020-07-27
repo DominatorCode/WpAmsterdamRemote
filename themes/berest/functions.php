@@ -779,6 +779,29 @@ function BookNow() {
 /* Disable admin ACF menu */
 add_filter('acf/settings/show_admin', '__return_false');
 
+/* Modmy Merge ACF tabs*/
+add_action('admin_footer', static function() {
+
+    $screen = get_current_screen();
+    if ( $screen->base === 'post' ) {
+        echo '
+		<script>		
+			let $boxes = jQuery("#postbox-container-2 .postbox .acf-field-tab").parent(".inside");
+			if ( $boxes.length > 1 ) {
+			    let $firstBox = $boxes.first();
+			    $boxes.not($firstBox).each(function(){
+				    jQuery(this).children().appendTo($firstBox);
+				    jQuery(this).parent(".postbox").remove();				    
+			    });				
+			}
+			
+			jQuery("[id^=acf-group_] > h2 > span").text("Model parameters");
+			
+		</script>';
+    }
+
+});
+
 
 //<editor-fold desc="Screen Options settings">
 // move author box to sidebar
@@ -798,14 +821,14 @@ TAG;
 add_filter( 'hidden_meta_boxes', 'custom_hidden_meta_boxes' );
 function custom_hidden_meta_boxes( $hidden ) {
 
-    $arrOptions = array('authordiv', 'locationdiv','statisticsdiv','servicesdiv');
+    $arrOptions = array('authordiv', 'locationdiv','statisticsdiv','servicesdiv','rates-1');
     foreach ($arrOptions as $rOption) {
         $hidden[] = $rOption;
     }
 
     // make rates metabox always enable
-    $keyRates = array_search('rates-1', $hidden, true);
-    unset( $hidden[ $keyRates ] );
+    /*$keyRates = array_search('rates-1', $hidden, true);
+    unset( $hidden[ $keyRates ] );*/
 
     return $hidden;
 }
@@ -813,7 +836,9 @@ function custom_hidden_meta_boxes( $hidden ) {
 
 // activate ACF
 require get_template_directory() . '/inc/acf-local-fields/AcfRootGroupField.php';
-$acf_group_local = new AcfRootGroupField();
+$acf_group_local = new AcfRootGroupField('Model Parameters');
+$acf_group_local->addNameTermExclude('Rates');
+$acf_group_local->CreateAcfLocalGroup();
 $acf_group_local->ApplyFilterTaxonomyFields();
 
 //add_filter('acf/update_value/name=image', 'acf_set_featured_image_tt', 10, 3);

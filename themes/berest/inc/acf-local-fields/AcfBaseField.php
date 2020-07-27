@@ -13,4 +13,13 @@ class AcfBaseField
 	{
 		return uniqid($namePrefix, false);
 	}
+
+	public function CheckIfAcfInstalled() : bool
+	{
+		if (!class_exists('ACF')) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -4,14 +4,37 @@ namespace DirectoryCustomFields;
 use AcfLocalGroupField;
 
 require get_template_directory() . '/inc/acf-local-fields/AcfLocalGroupField.php';
+//require get_template_directory() . '/inc/acf-local-fields/AcfBaseField.php';
 
-class AcfRootGroupField
+class AcfRootGroupField extends AcfBaseField
 {
     /**
      * Path for working directory for ACF json files
      * @var string
      */
     public $path_dir_acf = '/acf-json';
+
+    public $nameGroupRoot;
+
+	private $arr_name_terms_excluded = array();
+
+	private $arr_id_terms_excluded = array();
+
+	/**
+	 * @return mixed
+	 */
+	public function getArrNameTermsExcluded()
+	{
+		return $this->arr_name_terms_excluded;
+	}
+
+	/**
+	 * @param string $name_term_exclude
+	 */
+	public function addNameTermExclude(string $name_term_exclude): void
+	{
+		$this->arr_name_terms_excluded[] = strtolower($name_term_exclude);
+	}
 
     /**
      *  Root group key id
@@ -21,17 +44,30 @@ class AcfRootGroupField
 
     /**
      * AcfRootGroupField constructor.
+     * @param $name_displayed
+     * Displayed name of root group
+     * @param string $id_group
+     * Key Id identification of creating root group
      */
-    public function __construct()
+    public function __construct($name_displayed, $id_group = '')
     {
+        if (!empty($id_group))
+            $this->idKeyRoot = $id_group;
+
+        $this->nameGroupRoot = $name_displayed;
         add_filter('acf/settings/save_json', array($this, 'my_acf_json_save_point'));
         add_filter('acf/settings/load_json', array($this, 'my_acf_json_load_point'));
-        add_action('admin_init', array($this, 'wpse29164_GenerateLocalAdminAcfForms'));
+
     }
+
+	public function CreateAcfLocalGroup()
+	{
+		add_action('admin_init', array($this, 'wpse29164_GenerateLocalAdminAcfForms'));
+	}
 
     public function ApplyFilterTaxonomyFields()
     {
-        add_action('init', array($this, 'wpse29164_applyAcfFilters'));
+        add_action('admin_init', array($this, 'wpse29164_applyAcfFilters'));
     }
 
     public function wpse29164_GenerateLocalAdminAcfForms(): void
@@ -69,11 +105,18 @@ class AcfRootGroupField
 
             // Generate "Rates" tab
             $arr_fields[] = $this->CreateAcfTabField('rates_tab', 'Rates', 'field_5ecee45e7b68a');
-            $arr_fields[] = $this->CreateAcfTextField('Model Rates', 'model_rates', '', array(
+            /*$arr_fields[] = $this->CreateAcfTextField('Model Rates', 'model_rates', '', array(
                 'width' => '',
                 'class' => '',
                 'id' => 'fakeField',
-            ));
+            ));*/
+
+	        $values = $this->CreateRatesGroups();
+	        foreach ($values as $val) {
+		        $arr_fields[] = $val;
+	        }
+
+
 
             // Generate "Model Image Field" tab
             $arr_fields[] = $this->CreateAcfTabField('image_tab', 'Image','field_5ecee4837b68b');
@@ -85,7 +128,7 @@ class AcfRootGroupField
 
             $arrDataGroupExport = array(
                 'key' => $this->idKeyRoot,
-                'title' => 'Model Parameters',
+                'title' => $this->nameGroupRoot,
                 'fields' => $arr_fields,
                 'location' => array(
                     array(
@@ -119,18 +162,25 @@ class AcfRootGroupField
                         'taxonomy' => $taxonomy->name,
                         'hide_empty' => false,
                         'parent' => 0,
+	                    /*'exclude' => array( 111 ), may be use this for exclude terms
+	                    Ex.: get_term_by('name', 'Rates', 'statistics');
+	                    */
                     ]);
 
                     // generate columns for each parent term
                     $indexTerm = 0;
                     foreach ($terms as $term) {
-                        $this->CreateAcfSubFieldTaxonomy($term->name,$term->slug,
-                            'checkbox', $taxonomy->name, $arrKeysGroup[$indexGroup], $arrKeysGroup[$indexGroup] . $indexTerm++);
+	                    if (!in_array($term->slug, $this->arr_name_terms_excluded, true)) {
+		                    $this->CreateAcfSubFieldTaxonomy($term->name,$term->slug,
+			                    'checkbox', $taxonomy->name, $arrKeysGroup[$indexGroup], $arrKeysGroup[$indexGroup] . $indexTerm++);
+	                    } else {
+		                    $this->arr_id_terms_excluded[] = $term->term_taxonomy_id;
+	                    }
+
                     }
                     $indexGroup++;
                 }
             }
-
         endif;
     }
 
@@ -249,14 +299,25 @@ class AcfRootGroupField
     {
         $taxonomies = $this->GetListCustomTaxonomies('names');
 
-        // Step 2: Get custom taxonomies name and id from list
+        // Step 2: Get custom taxonomy names and id from list
         if ($taxonomies) {
             foreach ($taxonomies as $taxonomy) {
                 $terms = get_terms([
                     'taxonomy' => $taxonomy,
                     'hide_empty' => false,
                     'parent' => 0,
+	                'exclude' => $this->arr_id_terms_excluded,
                 ]);
+
+	            /*if (defined('WP_DEBUG') && true === WP_DEBUG) {
+		            var_dump($terms);
+	            }
+
+	            define('DEBUG', true);
+	            if (DEBUG):
+		            var_dump($terms);
+	            endif;*/
+
                 // Step 3: Apply filter for each term
                 foreach ($terms as $term_single) {
                     $this->CreateAcfFilterField($term_single);
@@ -301,14 +362,6 @@ class AcfRootGroupField
         return get_taxonomies($args, $output, $operator);
     }
 
-    /**
-     * Generates unique key id for ACF fields
-     * @return string
-     */
-    public function GenerateUniqueKeyId() : string
-    {
-        return uniqid('field_', false);
-    }
 
     public function GetListAcfGroups(): void
     {
@@ -340,10 +393,246 @@ class AcfRootGroupField
         $paths[] = get_stylesheet_directory() . $this->path_dir_acf;
 
         // return
-        return $paths;
+	    return $paths;
 
     }
 
+    private function CreateRatesGroups(): ?\Generator
+    {
 
+        //$arr_groups = array();
+	    yield array(
+            'key' => 'field_5f16ce2dcae6b',
+            'label' => 'Additional Hour Admin',
+            'name' => 'additional_hour_admin',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '40',
+                'class' => 'acf-responsive',
+                'id' => '',
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_5f16cf2fcae6c',
+                    'label' => 'In',
+                    'name' => 'in_aha',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+                array(
+                    'key' => 'field_5f16cf6bcae6d',
+                    'label' => 'Out',
+                    'name' => 'out_aha',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+            ),
+        );
+
+	    yield array(
+            'key' => 'field_5f16cffce2e7d',
+            'label' => '1 Hour',
+            'name' => '1_hour',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '40',
+                'class' => 'acf-responsive',
+                'id' => '',
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_5f16d01fe2e7e',
+                    'label' => 'In',
+                    'name' => 'in_1h',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+                array(
+                    'key' => 'field_5f16d043e2e7f',
+                    'label' => 'Out',
+                    'name' => 'out_1h',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+            ),
+        );
+
+	    yield array(
+            'key' => 'field_5f16d0f5d568b',
+            'label' => 'Dinner Date',
+            'name' => 'dinner_date',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '40',
+                'class' => 'acf-responsive',
+                'id' => '',
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_5f16d110d568c',
+                    'label' => 'In',
+                    'name' => 'in_dd',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+                array(
+                    'key' => 'field_5f16d13dd568d',
+                    'label' => 'Out',
+                    'name' => 'out_dd',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+            ),
+        );
+
+	    yield array(
+            'key' => 'field_5f16d1708dbc4',
+            'label' => 'Overnight',
+            'name' => 'overnight',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '40',
+                'class' => 'acf-responsive',
+                'id' => '',
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_5f16d1878dbc5',
+                    'label' => 'In',
+                    'name' => 'in_ov',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+                array(
+                    'key' => 'field_5f16d1b08dbc6',
+                    'label' => 'Out',
+                    'name' => 'out_ov',
+                    'type' => 'range',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => 'acf-responsive',
+                        'id' => '',
+                    ),
+                    'default_value' => '',
+                    'min' => '',
+                    'max' => '',
+                    'step' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ),
+            ),
+        );
+
+    }
 
 }
