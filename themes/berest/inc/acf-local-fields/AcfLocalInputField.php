@@ -2,9 +2,21 @@
 
 namespace DirectoryCustomFields;
 
+/**
+ * Class AcfLocalInputField implements Range ACF field
+ *
+ * UPGRADE
+ * 1. Set min, max, step values from options
+ * @package DirectoryCustomFields
+ */
 class AcfLocalInputField extends AcfBaseField
 {
 	private $arr_code_field = array();
+
+	private $min = '';
+	private $max = '';
+	private $step = '';
+	private $valueDefault = '';
 
 	/**
 	 * Return a generated code for ACF input field
@@ -30,12 +42,38 @@ class AcfLocalInputField extends AcfBaseField
 			'required' => 0,
 			'conditional_logic' => 0,
 			'wrapper' => $this->nameWrapper,
-			'default_value' => '',
-			'min' => '',
-			'max' => '',
-			'step' => '',
+			'default_value' => $this->valueDefault,
+			'min' => $this->min,
+			'max' => $this->max,
+			'step' => $this->step,
 			'prepend' => '',
 			'append' => '',
 		);
+	}
+
+	/**
+	 * Sets input parameters for field
+	 * @param string $valMin
+	 * @param string $valMax
+	 * @param string $valStep
+	 * @param string $valDefault
+	 */
+	public function SetInputParameters($valMin = '', $valMax = '', $valStep = '', $valDefault = ''): void
+	{
+		if (is_numeric($valMin)) {
+			$this->min=$valMin;
+		}
+
+		if (is_numeric($valMax)) {
+			$this->max=$valMax;
+		}
+
+		if (is_numeric($valStep) && $valStep > 0) {
+			$this->step=$valStep;
+		}
+
+		if (is_numeric($valDefault)) {
+			$this->valueDefault = $valDefault;
+		}
 	}
 }

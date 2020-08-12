@@ -17,9 +17,35 @@ class AcfBaseField
 	public function CheckIfAcfInstalled() : bool
 	{
 		if (!class_exists('ACF')) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
+
+	public $idKey;
+	public $nameLabel;
+	public $nameField;
+	public $nameWrapper;
+
+	public function __construct($pNameLabel, $pNameField, $pIdKey = '', $wrapper = array(
+		'width' => '',
+		'class' => '',
+		'id' => '',
+	))
+	{
+		// check key id
+		if (empty($pIdKey)) {
+			$this->idKey =  $this->GenerateUniqueKeyId();
+		}
+		else {
+			$this->idKey = $pIdKey;
+		}
+
+		$this->nameLabel = $pNameLabel;
+		$this->nameField = $pNameField;
+		$this->nameWrapper = $wrapper;
+
+	}
+
 }

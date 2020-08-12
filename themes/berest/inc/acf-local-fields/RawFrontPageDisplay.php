@@ -11,7 +11,11 @@ class RawFrontPageDisplay
 {
     //public  $arrTermsData = array();
 
-    public static function GetPostMainData($pWp_query)
+	/**
+	 * @param $pWp_query
+	 * @return mixed
+	 */
+	public static function GetPostMainData($pWp_query)
     {
         return $pWp_query->get_queried_object();
     }
