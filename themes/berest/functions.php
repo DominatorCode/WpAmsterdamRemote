@@ -897,24 +897,6 @@ function my_admin_enqueue_scripts()
 
 }
 
-function rates_test($post_id)
-{
-	$values = $_POST['acf'];
-
-	$hero_image = acf_get_local_field('in_add');
-	if ($values) {
-		//update_post_meta( $post_id, 'add_hour_in', 55);
-		$ptin = '';
-		foreach ($values as $value) {
-			$ptin .= var_export($value, true);
-		}
-
-		update_post_meta($post_id, 'model_images', $ptin);
-	}
-
-
-}
-//add_action( 'save_post', 'rates_test'  );
 
 //add_action('save_post', 'my_acf_save_post');
 function my_acf_save_post( $post_id ) {
@@ -940,6 +922,6 @@ function my_acf_save_post( $post_id ) {
 
 		update_post_meta($post_id, 'model_images', var_export(array_filter($var_export),true));
 	}
-	update_post_meta(258, 'add_hour_in', 55);
+
 }
 

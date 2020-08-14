@@ -238,8 +238,6 @@ class AcfRootGroupField extends AcfBaseField
 					$name_field_meta = $arr_name_rates[$index_rates];
 					$valDefault_in = get_post_meta($this->id_post, $name_field_meta . '_in', true);
 					$valDefault_out = get_post_meta($this->id_post, $name_field_meta . $postfix_out, true);
-
-					update_post_meta(258, 'model_images', $arr_name_rates[$index_rates]);
 				}
 
 				//</editor-fold>
@@ -606,7 +604,7 @@ class AcfRootGroupField extends AcfBaseField
 
 			// transform to array
 			$values_new = array_values($values);
-
+			update_post_meta($post_id, 'model_images', var_export($this->data_fields_meta_using, true));
 			// looping each acf meta field and check for updating value
 			foreach ($this->data_fields_meta_using as $field_meta) {
 
@@ -618,6 +616,7 @@ class AcfRootGroupField extends AcfBaseField
 						// if old value unequal to new perform db update
 						//if ($field_meta['ValueOld'] !== $item[$field_meta['KeyId']]) {
 						update_post_meta($post_id, $field_meta['NameMeta'], sanitize_text_field($item[$field_meta['KeyId']]));
+
 						//}
 
 						// delete unused
