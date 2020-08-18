@@ -898,30 +898,6 @@ function my_admin_enqueue_scripts()
 }
 
 
-//add_action('save_post', 'my_acf_save_post');
-function my_acf_save_post( $post_id ) {
-
-	$values = $_POST['acf'];
-	$ptin = '';
-	// Check if a specific value was updated.
-	if($values) {
 
 
-		/*$field = acf_get_local_field('in_add');*/
-		$var_export = array_values($values);
-
-		foreach ($var_export as $index => $value) {
-			if (array_key_exists('field_5f29e46ced777_out0', $value)) {
-				unset($var_export[$index]['field_5f29e46ced777_out0']);
-			}
-
-			if (array_key_exists('field_5f29e46ced777_in0', $value)) {
-				unset($var_export[$index]['field_5f29e46ced777_in0']);
-			}
-		}
-
-		update_post_meta($post_id, 'model_images', var_export(array_filter($var_export),true));
-	}
-
-}
 

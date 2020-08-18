@@ -35,18 +35,11 @@ class AcfRootGroupField extends AcfBaseField
 
 	/**
 	 * List of fields using meta fields
-	 * <code>
-	 * $array = array(
-	 *   'NameMeta'      => 'meta_name',
-	 *   'KeyId'   => 'field_123',
-	 *   'ValueOld'   => 0,
-	 * );
-	 * </code>
 	 * @var array
 	 * associative array
-	 * [NameMeta][KeyId][ValueOld]
+	 * [IdTerm][MetaData]
 	 */
-	private $data_fields_meta_using = array();
+	private $data_fields_custom_all = array();
 
 	/**
 	 * Contains data which meta name should use named term
@@ -92,6 +85,8 @@ class AcfRootGroupField extends AcfBaseField
 		// update fields data in DB after post edited
 		add_action('save_post', array($this, 'update_acf_field_data'));
 
+		// delete meta data after term was deleted
+		add_action('pre_delete_term', array($this, 'on_term_delete'), 10, 3);
 	}
 
 	/**
@@ -186,8 +181,8 @@ class AcfRootGroupField extends AcfBaseField
 
 			//<editor-fold desc="Generate Custom Group fields for Rates">
 			// Rates term data
-			$arr_term_rates_data = array('Taxonomy' => 'statistics', 'Id' => 111);
-			$postfix_out = '_out';
+			$arr_term_rates_data = ConfigurationParameters::$data_terms_input_range;
+			$postfix_out = ConfigurationParameters::$name_postfix_rates_out;
 
 			// Get Rates term child data object
 			$obj_rates = get_terms(
@@ -201,9 +196,12 @@ class AcfRootGroupField extends AcfBaseField
 			// get child names and labels
 			$arr_label_rates = array();
 			$arr_name_rates = array();
+			$arr_id_term_rates = array();
+
 			foreach ($obj_rates as $obj_rate) {
 				$arr_label_rates[] = $obj_rate->name;
 				$arr_name_rates[] = $obj_rate->slug;
+				$arr_id_term_rates[] = $obj_rate->term_id;
 			}
 
 			$index_rates = 0;
@@ -223,6 +221,7 @@ class AcfRootGroupField extends AcfBaseField
 				$valDefault_in = -1;
 				$valDefault_out = -1;
 				$name_field_meta = '';
+				$data_fields_meta_using = array();
 
 				// check if it's need to use a custom meta name
 				foreach ($this->data_terms_meta_custom as $item) {
@@ -249,7 +248,7 @@ class AcfRootGroupField extends AcfBaseField
 				$cIn->SetInputParameters(0, 200, 1, $valDefault_in);
 
 				// add field data for future updating [NameMeta][KeyId][ValueOld]
-				$this->data_fields_meta_using[] = array('NameMeta' => $name_field_meta . '_in',
+				$data_fields_meta_using[] = array('NameMeta' => $name_field_meta . '_in',
 					'KeyId' => $id_in, 'ValueOld' => $valDefault_in);
 
 				// add input field code to group field
@@ -262,7 +261,7 @@ class AcfRootGroupField extends AcfBaseField
 				$cOut->SetInputParameters(0, 300, 1, $valDefault_out);
 
 				// add data for future field updating [NameMeta][KeyId][ValueOld]
-				$this->data_fields_meta_using[] = array('NameMeta' => $name_field_meta . $postfix_out,
+				$data_fields_meta_using[] = array('NameMeta' => $name_field_meta . $postfix_out,
 					'KeyId' => $id_out, 'ValueOld' => $valDefault_out);
 
 				// add input field code to group field
@@ -270,6 +269,9 @@ class AcfRootGroupField extends AcfBaseField
 
 				// add final Rates code in common data
 				$arr_fields[] = $cFieldGroupRates->getArrFieldsGenerated();
+
+				// add field overall data in common array
+				$this->data_fields_custom_all[] = array('IdTerm' => $arr_id_term_rates[$index_rates], 'MetaData' => $data_fields_meta_using);
 
 				$index_rates++;
 				//</editor-fold>
@@ -349,8 +351,9 @@ class AcfRootGroupField extends AcfBaseField
 	 */
 	protected function getCustomTaxonomyList(): array
 	{
-		if (!isset($this->customTaxonomies))
+		if (!isset($this->customTaxonomies)) {
 			$this->customTaxonomies = $this->GetListCustomTaxonomies('objects');
+		}
 
 		return $this->customTaxonomies;
 	}
@@ -479,7 +482,6 @@ class AcfRootGroupField extends AcfBaseField
 			'allow_null' => 0,
 		));
 
-
 	}
 
 	public function wpse29164_applyAcfFilters(): void
@@ -604,31 +606,66 @@ class AcfRootGroupField extends AcfBaseField
 
 			// transform to array
 			$values_new = array_values($values);
-			update_post_meta($post_id, 'model_images', var_export($this->data_fields_meta_using, true));
+			//update_post_meta($post_id, 'model_images', var_export($this->data_fields_custom_all, true));
 			// looping each acf meta field and check for updating value
-			foreach ($this->data_fields_meta_using as $field_meta) {
+			foreach ($this->data_fields_custom_all as $data_field_custom) {
+				foreach ($data_field_custom['MetaData'] as $field_meta) {
 
-				// looping through updated data
-				foreach ($values_new as $key => $item) {
+					// looping through updated data
+					foreach ($values_new as $key => $item) {
 
-					// update db data
-					if (array_key_exists($field_meta['KeyId'], $item)) {
-						// if old value unequal to new perform db update
-						//if ($field_meta['ValueOld'] !== $item[$field_meta['KeyId']]) {
-						update_post_meta($post_id, $field_meta['NameMeta'], sanitize_text_field($item[$field_meta['KeyId']]));
+						// update db data
+						if (array_key_exists($field_meta['KeyId'], $item)) {
+							// if old value unequal to new perform db update
+							//if ($field_meta['ValueOld'] !== $item[$field_meta['KeyId']]) {
+							update_post_meta($post_id, $field_meta['NameMeta'], sanitize_text_field($item[$field_meta['KeyId']]));
 
-						//}
+							//}
 
-						// delete unused
-						unset($values_new[$key][$field_meta['KeyId']]);
-						break;
+							// delete unused
+							unset($values_new[$key][$field_meta['KeyId']]);
+							break;
 
+						}
+					}
+
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * Cleans db data after term was deleted
+	 * @param $term_id
+	 * @param $taxonomy
+	 */
+	public function on_term_delete($term_id, $taxonomy): void
+	{
+
+		// check if deleted taxonomy used custom input
+		if ($taxonomy === ConfigurationParameters::$data_terms_input_range['Taxonomy']) {
+
+			// check if its custom input field
+			// get terms parent ID
+			$id_parent = get_term($term_id, $taxonomy)->parent;
+
+			// check if it's custom data field by parent
+			if (($id_parent === ConfigurationParameters::$data_terms_input_range['Id'])) {
+				// find all metas of fields by used id
+				foreach ($this->data_fields_custom_all as $field_meta) {
+
+					if ($field_meta['IdTerm'] === $term_id) {
+						foreach ($field_meta['MetaData'] as $metaDatum) {
+							// delete all meta data in db
+
+							delete_post_meta_by_key($metaDatum['NameMeta']);
+						}
 					}
 				}
-
 			}
+
 		}
 
 	}
-
 }
