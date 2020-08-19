@@ -279,7 +279,7 @@ class AcfRootGroupField extends AcfBaseField
 			$arr_fields[] = $this->CreateAcfTextField('Model Images', 'model_images', '', array(
 				'width' => '',
 				'class' => '',
-				'id' => '',
+				'id' => 'fake-field',
 			));
 
 			$arrDataGroupExport = array(
