@@ -185,13 +185,8 @@ class AcfRootGroupField extends AcfBaseField
 			$postfix_out = ConfigurationParameters::$name_postfix_rates_out;
 
 			// Get Rates term child data object
-			$obj_rates = get_terms(
-				array(
-					'taxonomy' => $arr_term_rates_data['Taxonomy'],
-					'hide_empty' => false,
-					'parent' => $arr_term_rates_data['Id'],
-				)
-			);
+			$obj_rates = ConfigurationParameters::GetTermsList($arr_term_rates_data['Taxonomy'],
+				$arr_term_rates_data['Id']);
 
 			// get child names and labels
 			$arr_label_rates = array();
@@ -229,6 +224,7 @@ class AcfRootGroupField extends AcfBaseField
 						$name_field_meta = $item['NameMeta'];
 						$valDefault_in = get_post_meta($this->id_post, $item['NameMeta'] . '_in', true);
 						$valDefault_out = get_post_meta($this->id_post, $item['NameMeta'] . $postfix_out, true);
+						break;
 					}
 				}
 
