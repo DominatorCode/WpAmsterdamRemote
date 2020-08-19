@@ -863,7 +863,7 @@ require get_template_directory() . '/inc/acf-local-fields/AcfRootGroupField.php'
 $acf_group_local = new AcfRootGroupField($_GET['post'], 'Model Parameters');
 $acf_group_local->addNameTermExclude('Rates');
 
-// set custom meta for 'Rates' fields
+// Set custom meta for 'Rates' fields
 $arr_rates_meta = array();
 $arr_rates_meta[] = array('NameTerm' => 'Additional Hour Admin', 'NameMeta' => 'add_hour');
 $arr_rates_meta[] = array('NameTerm' => '1 Hour', 'NameMeta' => 'one_hour');
