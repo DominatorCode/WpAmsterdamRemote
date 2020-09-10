@@ -93,3 +93,4 @@ themes/berest/style.css
 !/plugins/directory/.phpintel/f985c4ff5fdd65e8bccb29be559ffccd
 !/plugins/directory/.phpintel/82dce495183b3615b15d9ea827c507a2
 !/plugins/directory/.phpintel/41adf58c6c27ee7cb9428e20e634f350
+themes/berest/template-parts/content.php

@@ -321,17 +321,16 @@ p:last-child{
 }
 
 .blog-posts-div  .content-div{
-	padding: 20px 35px;
-	padding-right: 70px;
+	padding: 20px 70px 20px 35px;
 	background: #efefef;
-	margin-left: -80px;
+	/*margin-left: -80px;*/
 	min-height: 190px;
 	position: relative;
-	padding-bottom: 60px;
+	/*padding-bottom: 60px;*/
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	margin-top: 20px;
+	/*margin-top: 20px;*/
 }
 
 .blog-posts-div  .content-div .btn{
@@ -547,7 +546,7 @@ border-radius: 0 !important;
 }
 .blog-page-article .blog-posts-div .content-div{
 	padding-bottom: 20px;
-	margin-top: 30px;
+	/*margin-top: 30px;*/
 }
 
 .section-title2{
