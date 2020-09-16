@@ -46,7 +46,6 @@ themes/berest/inc/jetpack.php
 themes/berest/inc/template-functions.php
 themes/berest/inc/template-tags.php
 themes/berest/js/aos.js
-themes/berest/js/booking.js
 themes/berest/js/booking_02172020.js
 themes/berest/js/bootstrap.min.js
 themes/berest/js/customizer.js
@@ -61,7 +60,6 @@ themes/berest/js/scripts.js
 themes/berest/js/skip-link-focus-fix.js
 themes/berest/languages/
 themes/berest/layouts/
-themes/berest/page-booking.php
 themes/berest/page-booking_02172020.php
 themes/berest/page.php
 themes/berest/phpcs.xml.dist

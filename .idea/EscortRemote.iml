@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/backup-db" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/acf-code-helper-master" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/acf-theme-code" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/classic-editor" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/debug-this" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/directory/.phpintel" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/jsm-force-ssl" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/my-custom-functions" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/regenerate-thumbnails-advanced" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/wp-dbmanager" />
+      <excludeFolder url="file://$MODULE_DIR$/updraft" />
+      <excludeFolder url="file://$MODULE_DIR$/uploads" />
+      <excludeFolder url="file://$MODULE_DIR$/wpbackitup_backups" />
+      <excludeFolder url="file://$MODULE_DIR$/wpbackitup_restore" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

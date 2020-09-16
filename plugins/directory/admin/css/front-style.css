@@ -1,0 +1,66 @@
+/***********plugin css*****************/
+
+
+.large-image-thumnail {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+
+.thumbnails {
+	display: inline-block;
+	margin: 8px;
+	height: auto;
+	width: 30%;
+	overflow: hidden;
+	vertical-align: top;
+}
+
+.attachment-images .thumbnails img {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+
+.large-image-thumnail {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.attachment-images {
+	text-align: center;
+}
+
+
+.attachment-images .thumbnails img {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.hide_thumb {
+ display: none;
+}
+
+.loader-image {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+.loader-image img {
+    width: 100%;
+    max-width: 60px;
+}
+
+
+@media (max-width: 500px) {
+	
+	.thumbnails { 
+		width: 28%;
+	}
+
+}

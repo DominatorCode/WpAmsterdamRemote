@@ -1,0 +1,27 @@
+
+.awesome-cropper .modal, .awesome-cropper .modal.fade.in {
+  top: 2%
+}
+
+
+.canvas_wrap canvas {
+    width: 100% !important;
+	height: auto;
+}
+
+
+.awesome-cropper .modal-dialog {
+	max-width: 100%;
+	width:70%;
+}
+
+
+#gallery-metabox-list .edit-image, 
+#gallery-metabox-list .remove-image {
+
+	font-size: 0;
+
+} 
+.original_image img {
+	max-width: 100%;
+}

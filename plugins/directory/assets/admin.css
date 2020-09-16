@@ -1,0 +1,13 @@
+/* style for sortable image gallery */
+.sortable_wordpress_gallery li.attachment {
+	width:  141px;
+	height: 141px;
+}
+.sortable_wordpress_gallery {
+	display: block;
+}
+.sortable_wordpress_gallery:after {
+	display: table;
+	content: '';
+	clear: both;
+}
