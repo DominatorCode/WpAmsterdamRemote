@@ -38,7 +38,6 @@ themes/berest/fonts/
 themes/berest/footer.php
 themes/berest/gallery-bak121819.php
 themes/berest/gallery.php
-themes/berest/home.php
 themes/berest/images/
 themes/berest/inc/custom-header.php
 themes/berest/inc/customizer.php
@@ -70,7 +69,6 @@ themes/berest/search.php
 themes/berest/sidebar.php
 themes/berest/single-directory.php
 themes/berest/single-profile.php
-themes/berest/single.php
 themes/berest/style.css
 !/plugins/directory/.phpintel/21bf0b3daaace26e7a16fa14cea9e830
 !/plugins/directory/.phpintel/a7ebf9081d555d4ec6f1aa442421d628

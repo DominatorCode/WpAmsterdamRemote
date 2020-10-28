@@ -65,8 +65,8 @@ get_header();
 							<nav aria-label="Page navigation" class="pagination-div aos-init aos-animate"
 							     data-aos="fade-in">
 								<ul class="pagination">
-									<li class="selected"><span aria-hidden="true"><img
-													src="https://www.berlinescort.com/wp-content/themes/berest/images/left-arrow.png"></span>
+									<li class="selected"><span aria-hidden="true">
+											<img src="https://www.berlinescort.com/wp-content/themes/berest/images/left-arrow.png"></span>
 									</li>
 
 									<?php

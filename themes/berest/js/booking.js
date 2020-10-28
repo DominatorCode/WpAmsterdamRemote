@@ -22,7 +22,7 @@ var booking = {
 	},
 	modelChange: function (e) {
 
-		var url = e.selectedOptions[0].getAttribute('img');
+		const url = e.selectedOptions[0].getAttribute('img');
 
 		if (e.selectedIndex != 0) {
 			$('.model-name').text(e.selectedOptions[0].label);

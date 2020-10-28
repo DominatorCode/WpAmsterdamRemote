@@ -55,4 +55,38 @@ class ConfigurationParameters
 			)
 		);
 	}
+
+	/**
+	 * Returns a term id by its name
+	 * @param $name_term
+	 * @param string $name_slug_taxonomy
+	 * @return int
+	 */
+	public static function GetTermIdByName($name_term, string $name_slug_taxonomy): int
+	{
+		return get_term_by('name',$name_term, $name_slug_taxonomy)->term_id;
+	}
+
+	/**
+	 * Returns and Id of post by given Name
+	 * @param $name_title
+	 * @return int
+	 */
+	public static function GetPageIdByTitle($name_title): int
+	{
+		return get_page_by_title($name_title)->ID;
+	}
+
+	public static $name_booking_subject = 'Feedback from escort booking';
+	public static $email_booking = 'ceroff@mail.ru'; // get_option('admin_email'); UPDATE
+
+	public static $name_slug_taxonomy_location = 'location';
+
+	public static $name_term_featured = 'Female';
+	public static $name_term_hot_model = 'Party Girl';
+	public static $name_term_blog = 'Blog';
+
+	public static $name_page_home = 'HOME';
+
+	public static $name_slug_taxonomy_main = 'category';
 }
