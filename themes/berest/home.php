@@ -24,7 +24,13 @@ get_header();
 				<section class="home-banner">
 					<div class="container" data-aos="fade-in">
 						<div class="row">
-							<?php $latest_posts = query_posts('cat=49&showposts=1&order=DESC&orderby=rand&post_type=directory'); ?>
+							<?php
+
+							// Show big models picture
+							$id_big = ConfigurationParameters::GetTermIdByName(ConfigurationParameters::$name_term_featured,
+								ConfigurationParameters::$name_slug_taxonomy_main);
+							$query_big = 'cat=' . $id_big . '&showposts=1&order=DESC&orderby=rand&post_type=directory';
+							$latest_posts = query_posts($query_big); ?>
 							<?php if (have_posts()) : while (have_posts()) : the_post();
 								$exclude_ids = get_the_ID();
 								?>
@@ -63,7 +69,7 @@ get_header();
 									<div class="row">
 										<?php
 
-										//get data of models for featured section
+										//get data of models for FEATURED section
 										$id_term_featured = ConfigurationParameters::GetTermIdByName(
 											ConfigurationParameters::$name_term_featured,
 											ConfigurationParameters::$name_slug_taxonomy_main);
@@ -141,14 +147,18 @@ get_header();
 							<ul class="col5-row">
 								<?php
 
-								// Hot models section
+								// HOT MODELS section
 								// create new loop for 5 models from 'Party Girl' category
-								$id_hot_model = ConfigurationParameters::GetTermIdByName(
-									ConfigurationParameters::$name_term_hot_model,
+								$id_exclude = ConfigurationParameters::GetTermIdByName(
+									ConfigurationParameters::$name_term_featured,
 									ConfigurationParameters::$name_slug_taxonomy_main);
 
-								$query_models = 'cat=' . $id_hot_model . '&post_type=directory&showposts=5&order=DESC';
-								$latest_posts = query_posts($query_models);
+								$arr_query =  array( 'category__not_in' => array($id_exclude), 'post_type' => 'directory',
+									'orderby' => 'title', 'order' => 'DESC',
+									'showposts' => 5);
+								//$query_models = 'category__in=' . $id_exclude . '&post_type=directory&showposts=5&order=DESC';
+
+								$latest_posts = query_posts($arr_query);
 								?>
 
 								<?php /**
@@ -193,7 +203,9 @@ get_header();
 											</div>
 											<div class="bottom-content">
 												<h3><?php the_title(); ?></h3>
-												<?php echo ConfigurationParameters::$name_term_hot_model; ?>
+												<?php
+												$arr_name_terms_model = get_post_terms_data($post->ID, ConfigurationParameters::$name_slug_taxonomy_main);
+												echo $arr_name_terms_model[0]; ?>
 											</div>
 										</div>
 									</li>

@@ -82,7 +82,7 @@ class ConfigurationParameters
 
 	public static $name_slug_taxonomy_location = 'location';
 
-	public static $name_term_featured = 'Female';
+	public static $name_term_featured = 'Featured';
 	public static $name_term_hot_model = 'Party Girl';
 	public static $name_term_blog = 'Blog';
 
