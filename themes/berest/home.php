@@ -15,6 +15,21 @@
 use DirectoryCustomFields\ConfigurationParameters;
 
 get_header();
+
+/**
+ * Returns used terms data for given post
+ * @param $id_post
+ * @param $slug_taxonomy
+ * @param string $type_fields
+ * @return array|WP_Error
+ */
+function get_post_terms_data($id_post, $slug_taxonomy, $type_fields = 'names')
+{
+	return wp_get_post_terms($id_post,
+		$slug_taxonomy,
+		array('fields' => $type_fields, 'orderby' => 'parent'));
+}
+
 ?>
 
 	<div class="container main_content">
@@ -23,71 +38,96 @@ get_header();
 				<!--Home Page Sections-->
 				<section class="home-banner">
 					<div class="container" data-aos="fade-in">
+
+						<!-- Featured models						-->
 						<div class="row">
 							<?php
+							remove_all_filters('posts_orderby');
 
-							// Show big models picture
-							$id_big = ConfigurationParameters::GetTermIdByName(ConfigurationParameters::$name_term_featured,
+							// get id of featured term
+							$id_featured = ConfigurationParameters::GetTermIdByName(ConfigurationParameters::$name_term_featured,
 								ConfigurationParameters::$name_slug_taxonomy_main);
-							$query_big = 'cat=' . $id_big . '&showposts=1&order=DESC&orderby=rand&post_type=directory';
-							$latest_posts = query_posts($query_big); ?>
-							<?php if (have_posts()) : while (have_posts()) : the_post();
-								$exclude_ids = get_the_ID();
+
+							// id for exclude of post for first Featured model
+							$id_featured_exclude = 0;
+
+							?>
+
+							<div class="col-md-7">
+								<?php
+								// Show left BIG models data
+								$arr_query = array(
+									'post_type' => 'directory',
+									'post_status' => 'publish',
+									'cat' => $id_featured,
+									'orderby' => 'rand',
+									'order' => 'DESC',
+									'nopaging ' => true,
+									'posts_per_page' => 1);
+
+								$the_query = new WP_Query($arr_query);
+
+								// The Loop
+								if ($the_query->have_posts()) {
+									while ($the_query->have_posts()) {
+										$the_query->the_post();
+
+										$id_featured_exclude = get_the_ID();
+										//get URL of model image
+										$meta_image = get_post_meta(get_the_ID(), '_igmb_image_gallery_id', true);
+
+										foreach ($meta_image as $_value) {
+											$image_ = wp_get_attachment_image_src($_value, 'medium_size');
+										}
+										?>
+
+										<a href="<?php the_permalink(); ?>">
+											<div style="background-image: url('<?php echo $image_[0]; ?>')"
+											     class="left-div">
+												<div class="top-div">
+													<?php the_title(); ?>
+												</div>
+												<div class="bottom-div">
+													<?php
+
+													// get used cities for model
+													$arr_name_terms_model = get_post_terms_data($post->ID,
+														ConfigurationParameters::$name_slug_taxonomy_location);
+
+													echo $arr_name_terms_model[0];
+													?>
+												</div>
+											</div>
+										</a>
+									<?php }
+								} else {
+									echo "WARNING: no models in featured category";
+								}
+								/* Restore original Post Data */
+								wp_reset_postdata();
 								?>
-								<div class="col-md-7">
-									<?php
-									$meta_values_ = get_post_meta(get_the_ID(), '_igmb_image_gallery_id', true);
 
-									foreach ($meta_values_ as $_value) {
-										$image_ = wp_get_attachment_image_src($_value, 'medium_size');
-									}
-									?>
-									<a href="<?php the_permalink(); ?>">
-										<div style="background-image: url('<?php echo $image_[0]; ?>')"
-										     class="left-div">
-											<div class="top-div">
-												<?php the_title(); ?>
-											</div>
-											<div class="bottom-div">
-												<?php
+							</div>
 
-												// get used cities for model
-												$arr_name_terms_model = get_post_terms_data($post->ID,
-													ConfigurationParameters::$name_slug_taxonomy_location);
-
-												echo $arr_name_terms_model[0];
-												?>
-											</div>
-										</div>
-									</a>
-								</div>
-							<?php endwhile; endif;
-							wp_reset_query(); ?>
 							<div class="col-md-5">
 								<div class="featured-div">
 									<h2>FEATURED <span>ESCORTS</span></h2>
 									<div class="row">
 										<?php
 
-										//get data of models for FEATURED section
-										$id_term_featured = ConfigurationParameters::GetTermIdByName(
-											ConfigurationParameters::$name_term_featured,
-											ConfigurationParameters::$name_slug_taxonomy_main);
-
-										$args = array(
-											'posts_per_page' => 4,
+										$arr_query = array(
 											'orderby' => 'rand',
 											'order' => 'DESC',
 											'post_type' => 'directory',
 											'post_status' => 'publish',
-											'cat' => $id_term_featured,
-											'post__not_in' => array($exclude_ids)
+											'cat' => $id_featured,
+											'post__not_in' => array($id_featured_exclude),
+											'nopaging ' => true,
+											'posts_per_page' => 4
 										);
-										$loop = new WP_Query($args);
-										//$latest_posts = query_posts('cat=2&post_type=directory&showposts=4&order=DESC&orderby=rand&post__not_in ='.array($exclude_ids));
-										?>
+										$the_query = new WP_Query($arr_query);
 
-										<?php if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post(); ?>
+										if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>
 											<div class="col-xs-6">
 												<div class="thum-box-div" data-aos="zoom-in-up">
 													<?php
@@ -115,7 +155,7 @@ get_header();
 												</div>
 											</div>
 										<?php endwhile; endif;
-										wp_reset_query(); ?>
+										wp_reset_postdata(); ?>
 
 									</div>
 								</div>
@@ -141,41 +181,32 @@ get_header();
 						</div>
 					</section>
 
+					<!--Hot models-->
 					<section class="hot-modal-section paddingTB50" data-aos="fade-in">
 						<div class="container">
 							<h2 class="section-title text-center"><span>HOT MODELS</span></h2>
 							<ul class="col5-row">
 								<?php
-
-								// HOT MODELS section
+								//remove_all_filters('posts_orderby');
 								// create new loop for 5 models from 'Party Girl' category
-								$id_exclude = ConfigurationParameters::GetTermIdByName(
+								$id_term_exclude = ConfigurationParameters::GetTermIdByName(
 									ConfigurationParameters::$name_term_featured,
 									ConfigurationParameters::$name_slug_taxonomy_main);
 
-								$arr_query =  array( 'category__not_in' => array($id_exclude), 'post_type' => 'directory',
-									'orderby' => 'title', 'order' => 'DESC',
-									'showposts' => 5);
+								$arr_query = array(
+									'category__not_in' => array($id_term_exclude),
+									'post_type' => 'directory',
+									'post_status' => 'publish',
+									'orderby' => 'rand',
+									'order' => 'DESC',
+									'nopaging ' => true,
+									'posts_per_page' => 5);
+
 								//$query_models = 'category__in=' . $id_exclude . '&post_type=directory&showposts=5&order=DESC';
 
-								$latest_posts = query_posts($arr_query);
-								?>
+								$the_query = new WP_Query($arr_query);
 
-								<?php /**
-								 * Returns used terms data for given post
-								 * @param $id_post
-								 * @param $slug_taxonomy
-								 * @param string $type_fields
-								 * @return array|WP_Error
-								 */
-								function get_post_terms_data($id_post, $slug_taxonomy,$type_fields = 'names')
-								{
-									return wp_get_post_terms($id_post,
-										$slug_taxonomy,
-										array('fields' => $type_fields, 'orderby' => 'parent'));
-								}
-
-								if (have_posts()) : while (have_posts()) : the_post(); ?>
+								if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>
 									<li>
 										<div class="post-block-div">
 											<div class="thum-box-div" data-aos="zoom-in">
@@ -205,17 +236,19 @@ get_header();
 												<h3><?php the_title(); ?></h3>
 												<?php
 												$arr_name_terms_model = get_post_terms_data($post->ID, ConfigurationParameters::$name_slug_taxonomy_main);
-												echo $arr_name_terms_model[0]; ?>
+												echo $arr_name_terms_model[0];
+												?>
 											</div>
 										</div>
 									</li>
 								<?php endwhile; endif;
-								wp_reset_query(); ?>
+								wp_reset_postdata(); ?>
 
 							</ul>
 						</div>
 					</section>
 
+					<!-- BLOG Section					-->
 					<section class="our-blog-section paddingB50" data-aos="fade-in">
 						<div class="container">
 							<h2 class="section-title text-center"><span>OUR BLOG</span></h2>
@@ -224,11 +257,19 @@ get_header();
 							// display models from 'Blog' category
 							$id_blog = ConfigurationParameters::GetTermIdByName(ConfigurationParameters::$name_term_blog,
 								ConfigurationParameters::$name_slug_taxonomy_main);
-							$query_blog = 'cat=' . $id_blog . '&showposts=2&order=DESC';
-							$latest_posts = query_posts($query_blog);
+
+							$arr_query = array(
+								'post_status' => 'publish',
+								'cat=' . $id_blog,
+								'orderby' => 'rand',
+								'order' => 'DESC',
+								'nopaging ' => true,
+								'posts_per_page' => 2);
+
+							$the_query = new WP_Query($arr_query);
 
 							?>
-							<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+							<?php if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>
 
 								<div class="blog-posts-div" data-aos="fade-up">
 									<div class="row">
@@ -257,7 +298,7 @@ get_header();
 									</div>
 								</div>
 							<?php endwhile; endif;
-							wp_reset_query(); ?>
+							wp_reset_postdata(); ?>
 
 						</div>
 					</section>

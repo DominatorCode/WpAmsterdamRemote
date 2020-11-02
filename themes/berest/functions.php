@@ -796,32 +796,6 @@ function BookNow()
 
 // ----------------------------------------------------------------------------------
 
-/* Disable admin ACF menu */
-add_filter('acf/settings/show_admin', '__return_false');
-
-/* Modmy Merge ACF tabs*/
-/*add_action('admin_footer', static function() {
-
-    $screen = get_current_screen();
-    if ( $screen->base === 'post' ) {
-        echo '
-		<script>		
-			let $boxes = jQuery("#postbox-container-2 .postbox .acf-field-tab").parent(".inside");
-			if ( $boxes.length > 1 ) {
-			    let $firstBox = $boxes.first();
-			    $boxes.not($firstBox).each(function(){
-				    jQuery(this).children().appendTo($firstBox);
-				    jQuery(this).parent(".postbox").remove();				    
-			    });				
-			}
-			
-			jQuery("[id^=acf-group_] > h2 > span").text("Model parameters");
-			
-		</script>';
-    }
-
-});*/
-
 //<editor-fold desc="Screen Options settings">
 // move author box to sidebar
 add_action('post_submitbox_misc_actions', 'move_author_to_publish_metabox');
@@ -859,6 +833,10 @@ function custom_hidden_meta_boxes($hidden)
 
 //</editor-fold>
 
+//<editor-fold desc="ACF code">
+/* Disable admin ACF menu */
+add_filter('acf/settings/show_admin', '__return_false');
+
 // activate ACF
 require get_template_directory() . '/inc/acf-local-fields/AcfRootGroupField.php';
 
@@ -879,6 +857,16 @@ $acf_group_local->setArrMetaTermsCustom($arr_rates_meta);
 $acf_group_local->CreateAcfRootLocalGroup();
 $acf_group_local->ApplyFilterTaxonomyFields();
 
+// add custom JS to interact with and modify ACF fields and settings
+add_action('acf/input/admin_enqueue_scripts', 'my_admin_enqueue_scripts');
+function my_admin_enqueue_scripts()
+{
+
+	wp_enqueue_script('my-admin-js', get_template_directory_uri() . '/js/acf-me.js', array(), '1.0.0', true);
+
+}
+//</editor-fold>
+
 //add_filter('acf/update_value/name=image', 'acf_set_featured_image_tt', 10, 3);
 function acf_set_featured_image_tt($value, $post_id, $field)
 {
@@ -889,13 +877,4 @@ function acf_set_featured_image_tt($value, $post_id, $field)
 	}
 
 	return $value;
-}
-
-// add custom JS to interact with and modify ACF fields and settings
-add_action('acf/input/admin_enqueue_scripts', 'my_admin_enqueue_scripts');
-function my_admin_enqueue_scripts()
-{
-
-	wp_enqueue_script('my-admin-js', get_template_directory_uri() . '/js/acf-me.js', array(), '1.0.0', true);
-
 }
