@@ -202,8 +202,6 @@ function get_post_terms_data($id_post, $slug_taxonomy, $type_fields = 'names')
 									'nopaging ' => true,
 									'posts_per_page' => 5);
 
-								//$query_models = 'category__in=' . $id_exclude . '&post_type=directory&showposts=5&order=DESC';
-
 								$the_query = new WP_Query($arr_query);
 
 								if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>

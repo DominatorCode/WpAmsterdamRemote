@@ -18,7 +18,7 @@ get_header();
 			while (have_posts()) :
 				the_post();
 
-				get_template_part('template-parts/content', get_post_type());
+				get_template_part('template-parts/content', 'blog');
 
 				// If comments are open and enable or we have at least one comment, load up the comment template.
 				$comments_enable = false;
@@ -29,6 +29,7 @@ get_header();
 			endwhile; // End of the loop.
 			?>
 
+			<!--	Navigation		-->
 			<nav aria-label="Page navigation" class="aos-init aos-animate"
 			     data-aos="fade-in" style="text-align: center">
 				<ul class="pagination">

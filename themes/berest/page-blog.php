@@ -29,14 +29,16 @@ get_header();
 				<article class="blog-page-article">
 					<section class="our-blog-section paddingB50 aos-init aos-animate" data-aos="fade-in">
 						<div class="container">
-							<h1 class="title text-center">ESCORT BLOG</h1>
+							<header class="entry-header">
+								<h1 class="title text-center">ESCORT BLOG</h1>
+							</header>
 							<div class="blog-posts-div aos-init aos-animate" data-aos="fade-up">
 								<div class="row">
 									<div class="col-sm-4">
 										<div class="img-div"
 										     style="background-image: url(https://berlinescort.com/wp-content/uploads/2019/06/b-post-img.png)">
 											<a href="#"><img loading="lazy"
-											                 src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'full'); ?>"
+											                 src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'medium_size'); ?>"
 											                 width="427" height="255" alt=""> </a>
 										</div>
 									</div>
@@ -60,7 +62,6 @@ get_header();
 								</div>
 							</div>
 
-
 							<!--<editor-fold desc="Custom Pagination">-->
 							<nav aria-label="Page navigation" class="pagination-div aos-init aos-animate"
 							     data-aos="fade-in">
@@ -71,24 +72,25 @@ get_header();
 
 									<?php
 									$paged = (get_query_var('paged')) ?: 1;
-									query_posts(
-										array(
-											'post_type' => 'post',
-											'posts_per_page' => 3,
-											'paged' => $paged,
-											'order' => 'ASC')
-									);
+
+									$the_query = new WP_Query(array(
+										'post_type' => 'post',
+										'post_status' => 'publish',
+										'posts_per_page' => 3,
+										'paged' => $paged,
+										'order' => 'ASC'));
+
 									// The Loop
 									$number_page = 1;
-									while (have_posts()) : the_post(); ?>
+									if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>
 										<li p="<?php echo $number_page ?>" class="active">
 											<a href="<?php the_permalink(); ?>"><?php echo $number_page++ ?></a>
 										</li>
 
-									<?php endwhile;
+									<?php endwhile; endif;
 
 									// Reset Query
-									wp_reset_query();
+									wp_reset_postdata();
 									?>
 									<?php $url_post_last = get_permalink(get_last_post_data()['ID']); ?>
 									<li p="<?php echo $number_page ?>" class="active"><span aria-hidden="true">
