@@ -4,8 +4,6 @@ namespace DirectoryCustomFields;
 
 class ConfigurationParameters
 {
-	private static $position_tab_rates = 4;
-
 	private static $id_key_field_sub_custom = 'field_5f29e46ced777';
 
 	public static $name_postfix_rates_in = '_in';
@@ -74,7 +72,8 @@ class ConfigurationParameters
 	 */
 	public static function GetPageIdByTitle($name_title): int
 	{
-		return get_page_by_title($name_title)->ID;
+		$obj_page = get_page_by_title($name_title);
+		return $obj_page->ID ?? -1;
 	}
 
 	public static $name_booking_subject = 'Feedback from escort booking';
@@ -89,4 +88,7 @@ class ConfigurationParameters
 	public static $name_page_home = 'HOME';
 
 	public static $name_slug_taxonomy_main = 'category';
+	
+	public static $count_pagination_posts = 5;
+	public static $name_email_admin = 'ceroff@mail.ru';
 }

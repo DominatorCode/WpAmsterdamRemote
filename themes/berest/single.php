@@ -10,44 +10,46 @@
 get_header();
 
 ?>
+	<div class="container main_content">
 
-	<div id="primary" class="content-area">
-		<main id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<main id="main" class="site-main">
 
-			<?php
-			while (have_posts()) :
-				the_post();
+				<?php
+				while (have_posts()) :
+					the_post();
 
-				get_template_part('template-parts/content', 'blog');
+					get_template_part('template-parts/content', 'blog');
 
-				// If comments are open and enable or we have at least one comment, load up the comment template.
-				$comments_enable = false;
-				if ($comments_enable && (comments_open() || get_comments_number())) {
-					comments_template();
-				}
-
-			endwhile; // End of the loop.
-			?>
-
-			<!--	Navigation		-->
-			<nav aria-label="Page navigation" class="aos-init aos-animate"
-			     data-aos="fade-in" style="text-align: center">
-				<ul class="pagination">
-					<?php
-
-					if (get_next_post_link()) {
-						echo get_next_post_link('<li class="active">%link </li>', '&laquo; Previous: %title');
-					}
-					if (get_previous_post_link()) {
-						echo get_previous_post_link('<li class="active">%link </li>', 'Next: %title &raquo;');
+					// If comments are open and enable or we have at least one comment, load up the comment template.
+					$comments_enable = false;
+					if ($comments_enable && (comments_open() || get_comments_number())) {
+						comments_template();
 					}
 
-					?>
-				</ul>
-			</nav>
+				endwhile; // End of the loop.
+				?>
+
+				<!--	Navigation		-->
+				<nav aria-label="Page navigation" class="pagination-div aos-init aos-animate"
+				     data-aos="fade-in">
+					<ul class="pagination">
+						<?php
+
+						if (get_previous_post_link()) {
+							echo get_previous_post_link('<li class="active">%link </li>', '&laquo; Previous - %title');
+						}
+
+						if (get_next_post_link()) {
+							echo get_next_post_link('<li class="active">%link </li>', 'Next - %title &raquo;');
+						}
+
+						?>
+					</ul>
+				</nav>
+			</main><!-- #main -->
+		</div><!-- #primary -->
 	</div>
-	</main><!-- #main -->
-	</div><!-- #primary -->
 
 <?php
 get_sidebar();

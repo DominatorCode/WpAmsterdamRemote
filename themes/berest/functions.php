@@ -8,6 +8,7 @@
  */
 
 use DirectoryCustomFields\AcfRootGroupField;
+use DirectoryCustomFields\ConfigurationParameters;
 
 if (!function_exists('berest_setup')) :
 	/**
@@ -155,6 +156,7 @@ function berest_scripts()
 	wp_enqueue_script('jQuery', get_template_directory_uri() . '/js/jquery.min.js', array(), true);
 	wp_enqueue_script('AOS JS', get_template_directory_uri() . '/js/aos.js', array(), true);
 	wp_enqueue_script('Bootstrap JS', get_template_directory_uri() . '/js/bootstrap.min.js', array(), '3.3.7', true);
+
 	wp_enqueue_script('Script JS', get_template_directory_uri() . '/js/scripts.js', array(), true);
 
 	wp_enqueue_script('berest-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true);
@@ -207,9 +209,16 @@ function custom_sizes_()
 // Gallery Filter Start here ...
 function my_enqueue()
 {
-	wp_enqueue_script('gallery', get_template_directory_uri() . '/js/gallery.js', array(), '1.0', true);
-	wp_localize_script('gallery', 'my_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
-	wp_enqueue_script('booking', get_template_directory_uri() . '/js/booking.js', array(), '1.0', true);
+
+	if (is_page('gallery')) {
+		wp_enqueue_script('gallery', get_template_directory_uri() . '/js/gallery.js', array(), '1.0', true);
+		wp_localize_script('gallery', 'my_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
+	}
+
+	if (is_page('booking')) {
+		wp_enqueue_script('booking', get_template_directory_uri() . '/js/booking.js', array(), '1.0', true);
+	}
+
 
 }
 
@@ -263,7 +272,6 @@ function args_generator($term_id, $taxonomy = 'statistics')
 			),
 		);
 	}
-
 
 }
 
@@ -450,7 +458,6 @@ function GalleryFeed()
 				</li>';
 
 				array_push($content, $inner_content);
-
 
 			}
 
@@ -676,8 +683,9 @@ function getList($term_id, $taxonomy, $args_main)
 		$query = new WP_Query($args);
 		$count = $query->found_posts;
 
-		if ($count != 0)
+		if ($count != 0) {
 			$keypair[$value->term_id] = $value->name . ' (' . $count . ')';
+		}
 	}
 
 	return $keypair;
@@ -715,7 +723,6 @@ function BookingSession()
 		$page_id = sanitize_text_field($_POST['page_id']);
 
 		$_SESSION['booking_page_id'] = $page_id;
-
 
 	}
 
@@ -865,6 +872,7 @@ function my_admin_enqueue_scripts()
 	wp_enqueue_script('my-admin-js', get_template_directory_uri() . '/js/acf-me.js', array(), '1.0.0', true);
 
 }
+
 //</editor-fold>
 
 //add_filter('acf/update_value/name=image', 'acf_set_featured_image_tt', 10, 3);
@@ -878,3 +886,56 @@ function acf_set_featured_image_tt($value, $post_id, $field)
 
 	return $value;
 }
+
+
+
+//<editor-fold desc="Customizer">
+add_action( 'customize_register', 'my_theme_customize_register' );
+
+// init values from theme settings
+ConfigurationParameters::$count_pagination_posts = get_theme_mod( 'pagination' );
+
+function my_theme_customize_register($wp_customize)
+{
+
+	//<editor-fold desc="Pagination">
+	$wp_customize->add_section(
+		'pagination-number',
+		array(
+			'title' => __( 'Pagination number', '_s' ),
+			'priority' => 30,
+			'description' => __( 'Enter number of posts per page for pagination', '_s' )
+		)
+	);
+
+	$wp_customize->add_setting( 'pagination', array( 'default' => '5' ) );
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'pagination',
+		array( 'label' => __( 'Pagination', '_s' ),
+			'type'     => 'number',
+			'section' => 'pagination-number', 'settings' => 'pagination', ) ) );
+	//</editor-fold>
+
+	//<editor-fold desc="Email admin">
+	$wp_customize->add_section(
+		'email-admin',
+		array(
+			'title' => __( 'Submitting email', '_s' ),
+			'priority' => 20,
+			'description' => __( 'Enter email to receive emails after form submitting', '_s' )
+		)
+	);
+
+	$wp_customize->add_setting( 'email-admin', array( 'default' => 'admin@email.com' ) );
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'email-admin',
+		array( 'label' => __( 'Submitting email', '_s' ),
+			'type'     => 'email',
+			'section' => 'email-admin', 'settings' => 'email-admin', ) ) );
+	//</editor-fold>
+}
+//</editor-fold>
+
+
+
+/*$headers = array('Content-Type: text/html; charset=UTF-8');
+$html = 'Test message message test test test';
+wp_mail("ceroff@mail.ru", "Test from Escort", $html, $headers);*/

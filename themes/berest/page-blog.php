@@ -3,6 +3,8 @@
 Template Name: Blog Page Template
 */
 
+use DirectoryCustomFields\ConfigurationParameters;
+
 /**
  * Returns data of last published post
  * @return int|mixed|WP_Post
@@ -62,45 +64,7 @@ get_header();
 								</div>
 							</div>
 
-							<!--<editor-fold desc="Custom Pagination">-->
-							<nav aria-label="Page navigation" class="pagination-div aos-init aos-animate"
-							     data-aos="fade-in">
-								<ul class="pagination">
-									<li class="selected"><span aria-hidden="true">
-											<img src="https://www.berlinescort.com/wp-content/themes/berest/images/left-arrow.png"></span>
-									</li>
-
-									<?php
-									$paged = (get_query_var('paged')) ?: 1;
-
-									$the_query = new WP_Query(array(
-										'post_type' => 'post',
-										'post_status' => 'publish',
-										'posts_per_page' => 3,
-										'paged' => $paged,
-										'order' => 'ASC'));
-
-									// The Loop
-									$number_page = 1;
-									if ($the_query->have_posts()) : while ($the_query->have_posts()) : $the_query->the_post(); ?>
-										<li p="<?php echo $number_page ?>" class="active">
-											<a href="<?php the_permalink(); ?>"><?php echo $number_page++ ?></a>
-										</li>
-
-									<?php endwhile; endif;
-
-									// Reset Query
-									wp_reset_postdata();
-									?>
-									<?php $url_post_last = get_permalink(get_last_post_data()['ID']); ?>
-									<li p="<?php echo $number_page ?>" class="active"><span aria-hidden="true">
-											<a href="<?php echo $url_post_last ?>">
-												<img src="https://www.berlinescort.com/wp-content/themes/berest/images/right-arrow.png">
-											</a></span>
-									</li>
-								</ul>
-							</nav>
-							<!--</editor-fold>-->
+							<?php get_template_part('template-parts/content', 'pagination'); ?>
 
 						</div>
 					</section>
