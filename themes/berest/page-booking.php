@@ -76,7 +76,7 @@ if ($directory_id !== 0) {
 
 $args = array(
 	'post_type' => array('directory'),
-	'nopaging' => false,
+	'nopaging' => true,
 	'order' => 'DESC',
 	'orderby' => 'modified',
 );
@@ -175,7 +175,7 @@ wp_reset_postdata(); // reset the query
 													<label>DATE</label>
 													<table cellpadding="0" cellspacing="0" width="100%" class="w200">
 														<tr>
-															<td width="112">
+															<td>
 
 																<select class="form-control month-dropdown"
 																        name="dateMonth" id="date_month">
@@ -195,7 +195,7 @@ wp_reset_postdata(); // reset the query
 																</select>
 
 															</td>
-															<td width="10"></td>
+															<td></td>
 															<td>
 																<select class="form-control day-dropdown"
 																        name="dateDay">

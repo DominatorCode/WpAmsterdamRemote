@@ -88,7 +88,10 @@ class ConfigurationParameters
 	public static $name_page_home = 'HOME';
 
 	public static $name_slug_taxonomy_main = 'category';
-	
+
+	/**
+	 * @var int
+	 */
 	public static $count_pagination_posts = 5;
 	public static $name_email_admin = 'ceroff@mail.ru';
 }
