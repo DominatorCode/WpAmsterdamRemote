@@ -6,7 +6,7 @@
 /plugins/my-custom-functions/
 /plugins/wp-dbmanager/
 /plugins/directory/.phpintel/
-!/themes/berest/acf-taxonomy-depth-rule.php
+/themes/berest/acf-taxonomy-depth-rule.php
 .idea/sonarlint/
 backup-db/
 index.php
@@ -28,11 +28,7 @@ themes/berest/404.php
 themes/berest/LICENSE
 themes/berest/README.md
 themes/berest/acf-json/
-themes/berest/archive.php
-themes/berest/comments.php
 themes/berest/css/aos.css
-themes/berest/css/bootstrap.min.css
-themes/berest/css/responsive.css
 themes/berest/fonts/
 themes/berest/gallery-bak121819.php
 themes/berest/images/

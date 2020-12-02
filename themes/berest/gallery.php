@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template Name: Gallery
  *
@@ -53,11 +54,10 @@ get_header();
                             <div class="container">
                                 <div class="row justify-content-md-center">
                                     <div class="col-lg-10">
-                                        <div class="gallery-right-dropdown">
+                                        <div class="input-group gallery-right-dropdown">
                                         
                                         </div>
-                                        <div class="filter-reset"><a href="<?php wp_reset_postdata(); ?>">Reset</a>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
