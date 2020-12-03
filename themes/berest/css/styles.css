@@ -1,56 +1,64 @@
-.body-div{
+.body-div {
     overflow: hidden
 }
-body{
+
+body {
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     color: #000000;
 }
-img{
+
+img {
     max-width: 100%;
     height: auto
 }
-h1,h2,h3,h4,h5,h6{
+
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
 }
-header.affix{
-        position: fixed;
-        z-index: 9999;
-        width: 100%;
-        left: 0;
-        top: 0;
-        background: #fff;
-    }
 
-.container.main_content {
-  margin-top: 40px;
+header.affix {
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background: #fff;
 }
 
-.container{
+.container.main_content {
+    margin-top: 40px;
+}
+
+.container {
     max-width: 1400px;
     width: 100%;
 }
-.custom-navbar{
+
+.custom-navbar {
     background: url(../images/menu-bg.jpg) repeat-x left bottom;
     border-bottom: 1px solid #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1)
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1)
 }
-.custom-navbar .navbar-brand{
+
+.custom-navbar .navbar-brand {
     display: none;
 }
 
-.custom-navbar .navbar{
+.custom-navbar .navbar {
     margin: 0 -15px;
     min-height: inherit
 }
-.custom-navbar  .nav>li>a{
+
+.custom-navbar .nav > li > a {
     padding: 0 25px;
     line-height: 60px;
     color: #927a5e;
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
 }
-.custom-navbar  .nav>li.current-menu-item.page_item a{
+
+.custom-navbar .nav > li.current-menu-item.page_item a {
     background: url(../images/active-menu.jpg) repeat-x left top;
     color: #fff;
 }
@@ -58,22 +66,24 @@ header.affix{
 .header-right {
     text-align: right;
     font-size: 0;
-
+    
 }
-.header-right .flag-div{
+
+.header-right .flag-div {
     display: inline-block;
     margin-right: 20px;
     line-height: 60px;
 }
-.header-right .btn.call{
 
-    padding:0 20px;
+.header-right .btn.call {
+    
+    padding: 0 20px;
     line-height: 60px;
     background: #8e8072;
     color: #fff;
     -webkit-border-radius: 0;
--moz-border-radius:0;
-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 .logo img {
@@ -83,22 +93,24 @@ border-radius: 0;
     position: absolute;
 }
 
-.logo-div img{
+.logo-div img {
     margin: 25px;
     margin-bottom: 20px;
 }
 
-.home-banner{
+.home-banner {
     margin-bottom: 50px;
 }
-.home-banner .left-div{
+
+.home-banner .left-div {
     min-height: 815px;
     padding: 15px;
     position: relative;
     background-size: cover;
     background-position: center;
 }
-.home-banner .left-div .top-div{
+
+.home-banner .left-div .top-div {
     background-image: url(../images/pink-shadow-bg.png);
     background-size: auto 100%;
     min-height: 62px;
@@ -109,7 +121,8 @@ border-radius: 0;
     color: #fff;
     z-index: 5
 }
-.home-banner .left-div .bottom-div{
+
+.home-banner .left-div .bottom-div {
     background-image: url(../images/gray-shadow-bg.png);
     background-size: auto 100%;
     min-height: 62px;
@@ -125,15 +138,15 @@ border-radius: 0;
     z-index: 5
 }
 
-
-.thum-box-div{
+.thum-box-div {
     position: relative;
     min-height: 350px;
     background: #000;
     margin-bottom: 30px;
     overflow: hidden;
 }
-.thum-box-div .new-tag{
+
+.thum-box-div .new-tag {
     background-image: url(../images/new-tag.png);
     background-repeat: no-repeat;
     width: 80px;
@@ -145,7 +158,7 @@ border-radius: 0;
     z-index: 8
 }
 
-.thum-box-div .img-div{
+.thum-box-div .img-div {
     position: absolute;
     left: 0;
     top: 0;
@@ -156,7 +169,7 @@ border-radius: 0;
     background-repeat: no-repeat;
 }
 
-.thum-box-div .top-div{
+.thum-box-div .top-div {
     background-image: url(../images/pink-shadow-bg.png);
     background-size: auto 100%;
     min-height: 30px;
@@ -171,7 +184,8 @@ border-radius: 0;
     width: 100%;
     z-index: 5
 }
-.thum-box-div .bottom-div{
+
+.thum-box-div .bottom-div {
     background-image: url(../images/gray-shadow-bg.png);
     background-size: auto 100%;
     min-height: 30px;
@@ -187,7 +201,7 @@ border-radius: 0;
     z-index: 5
 }
 
-.home-banner .featured-div h2{
+.home-banner .featured-div h2 {
     font-size: 36px;
     font-weight: 600;
     margin: 0;
@@ -198,11 +212,11 @@ border-radius: 0;
     background-position: left bottom
 }
 
-.home-banner .featured-div h2 span{
+.home-banner .featured-div h2 span {
     color: #e83671;
 }
 
-.welcome-div{
+.welcome-div {
     text-align: center;
     position: relative;
     background-size: cover;
@@ -212,12 +226,14 @@ border-radius: 0;
     line-height: 28px;
     background-position: center 0;
 }
-.welcome-div h2{
+
+.welcome-div h2 {
     font-size: 36px;
     line-height: 40px;
     font-weight: 600;
 }
-.welcome-div:after{
+
+.welcome-div:after {
     content: "";
     position: absolute;
     left: 0;
@@ -229,15 +245,16 @@ border-radius: 0;
     opacity: 0.72;
 }
 
-.welcome-div .container{
+.welcome-div .container {
     position: relative;
     z-index: 5
 }
 
-.paddingTB50{
+.paddingTB50 {
     padding: 50px 0;
 }
-.section-title{
+
+.section-title {
     margin: 0;
     padding: 0;
     font-size: 22px;
@@ -245,12 +262,13 @@ border-radius: 0;
     position: relative;
     margin-bottom: 50px;
 }
-.section-title span{
+
+.section-title span {
     display: inline-block;
     background: #fff;
 }
 
-.section-title:after{
+.section-title:after {
     width: 100%;
     height: 1px;
     background: #c6c6c6;
@@ -262,23 +280,24 @@ border-radius: 0;
     left: 0;
 }
 
-.col5-row{
+.col5-row {
     margin: 0 -15px;
     padding: 0;
     list-style: none;
     font-size: 0
 }
 
-.col5-row li{
+.col5-row li {
     display: inline-block;
     width: 20%;
     padding: 0 15px;
 }
 
-p:last-child{
+p:last-child {
     margin-bottom: 0
 }
-.post-block-div .bottom-content{
+
+.post-block-div .bottom-content {
     font-size: 18px;
     font-weight: 700;
     color: #c6c6cb;
@@ -289,7 +308,8 @@ p:last-child{
     padding-bottom: 10px;
     margin-bottom: 30px;
 }
-.post-block-div .bottom-content h3{
+
+.post-block-div .bottom-content h3 {
     font-size: 18px;
     font-weight: 700;
     color: #000;
@@ -298,29 +318,30 @@ p:last-child{
     margin-bottom: 3px;
 }
 
-.paddingB50{
+.paddingB50 {
     padding-bottom: 50px;
 }
 
-.blog-posts-div{
+.blog-posts-div {
     position: relative;
     margin-bottom: 40px;
 }
-.blog-posts-div:last-child{
+
+.blog-posts-div:last-child {
     margin-bottom: 0
 }
 
-.blog-posts-div .img-div img{
+.blog-posts-div .img-div img {
     width: 100%;
 }
 
-.blog-posts-div .img-div{
+.blog-posts-div .img-div {
     background-size: cover;
     background-repeat: no-repeat;
     background-color: #000;
 }
 
-.blog-posts-div  .content-div{
+.blog-posts-div .content-div {
     background: #efefef;
     margin-left: -80px;
     min-height: 190px;
@@ -332,7 +353,7 @@ p:last-child{
     margin-top: 20px;
 }
 
-.blog-posts-div  .content-div .btn{
+.blog-posts-div .content-div .btn {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -344,28 +365,29 @@ p:last-child{
     width: 140px;
     color: #fff;
     line-height: 30px;
-    -webkit-border-radius:0;
--moz-border-radius:0;
-border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
-.blog-posts-div .right-icon{
+.blog-posts-div .right-icon {
     position: absolute;
     right: 15px;
     top: 15px;
 }
 
-.blog-posts-div  h2{
+.blog-posts-div h2 {
     margin: 0;
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #c6c6c6;
-font-size: 32px;
+    font-size: 32px;
     font-weight: 600;
 }
-.blog-posts-div  h2 a{
-    text-decoration: none;
 
+.blog-posts-div h2 a {
+    text-decoration: none;
+    
     color: #000;
 }
 
@@ -373,14 +395,15 @@ font-size: 32px;
     display: none;
 }
 
-footer{
+footer {
     background-color: #000;
     padding: 50px 0;
     color: #777777;
     position: relative;
     background-position: center 0;
 }
-footer:after{
+
+footer:after {
     content: "";
     position: absolute;
     left: 0;
@@ -392,148 +415,156 @@ footer:after{
     opacity: 0.9;
 }
 
-footer .container{
+footer .container {
     position: relative;
     z-index: 5
 }
-.footer-menu{
+
+.footer-menu {
     margin: 0;
     padding: 0;
     font-size: 0;
     margin-bottom: 25px;
 }
-.footer-menu li{
-    display: inline-block;
 
+.footer-menu li {
+    display: inline-block;
+    
 }
-.footer-menu li a{
+
+.footer-menu li a {
     color: #927a5e;
     font-size: 15px;
     padding: 0 25px;
     font-weight: 400;
 }
-.footer-menu li.active a{
+
+.footer-menu li.active a {
     color: #fff;
 }
 
-
-.gallery-right-dropdown{
+.gallery-right-dropdown {
     font-size: 0;
     /* margin-top: 70px; */
-/*  text-align: right;*/
-}
-.gallery-right-dropdown select{
-    display: inline-block;
-    -webkit-border-radius: 0;
--moz-border-radius:0;
-border-radius: 0;
-    width: auto;
-     -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-     background-image:
-    linear-gradient(45deg, transparent 50%, #000 50%),
-    linear-gradient(135deg, #000 50%, transparent 50%),
-    linear-gradient(to right, #e83772, #e83772);
-  background-position:
-    calc(100% - 18px) calc(1em + 2px),
-    calc(100% - 13px) calc(1em + 2px),
-    100% 0;
-  background-size:
-    5px 5px,
-    5px 5px,
-    2.5em 2.5em;
-  background-repeat: no-repeat;
-    padding-right: 50px;
-    border:1px solid #c6c6c6;
-    border-left:none;
+    /*  text-align: right;*/
 }
 
-.gallery-right-dropdown select:first-child{
-    border-left:1px solid #c6c6c6;
+.gallery-right-dropdown select {
+    display: inline-block;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    width: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #000 50%),
+    linear-gradient(135deg, #000 50%, transparent 50%),
+    linear-gradient(to right, #e83772, #e83772);
+    background-position: calc(100% - 18px) calc(1em + 2px),
+    calc(100% - 13px) calc(1em + 2px),
+    100% 0;
+    background-size: 5px 5px,
+    5px 5px,
+    2.5em 2.5em;
+    background-repeat: no-repeat;
+    padding-right: 50px;
+    border: 1px solid #c6c6c6;
+    border-left: none;
+}
+
+.gallery-right-dropdown select:first-child {
+    border-left: 1px solid #c6c6c6;
 }
 
 .gallery-right-dropdown select:focus {
-  background-image:
-    linear-gradient(45deg, white 50%, transparent 50%),
+    background-image: linear-gradient(45deg, white 50%, transparent 50%),
     linear-gradient(135deg, transparent 50%, white 50%),
     linear-gradient(to right, gray, gray);
-  background-position:
-    calc(100% - 13px) 1em,
+    background-position: calc(100% - 13px) 1em,
     calc(100% - 18px) 1em,
     100% 0;
-  background-size:
-    5px 5px,
+    background-size: 5px 5px,
     5px 5px,
     2.5em 2.5em;
-  background-repeat: no-repeat;
-  border-color: grey;
-  outline: 0;
+    background-repeat: no-repeat;
+    border-color: grey;
+    outline: 0;
 }
 
-
-.pagination-div{
+.pagination-div {
     text-align: center;
     margin: 20px 0;
 }
-.pagination-div ul{
+
+.pagination-div ul {
     -webkit-border-radius: 0;
--moz-border-radius: 0;
-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
-.pagination-div ul li{
+
+.pagination-div ul li {
     padding: 0 10px;
     display: inline-block;
 }
-.pagination-div ul li span{
+
+.pagination-div ul li span {
     -webkit-border-radius: 0;
--moz-border-radius: 0;
-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
-.pagination-div ul li a{
+
+.pagination-div ul li a {
     background: #e8e7e7;
     color: #000;
     border-color: #000;
     -webkit-border-radius: 0 !important;
--moz-border-radius: 0 !important;
-border-radius: 0 !important;
-
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    
 }
-.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover,
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover,
 .pagination-div ul li.active span,
-.pagination-div ul li.active a{
+.pagination-div ul li.active a {
     background: #c3c3c3;
     color: #000;
     border-color: #000;
 }
-.blog-page-article{
+
+.blog-page-article {
     padding-top: 50px;
 }
-.blog-page-article .title{
+
+.blog-page-article .title {
     font-size: 45px;
     margin: 0;
     margin-bottom: 60px;
     font-weight: 600
 }
-.tages-div{
+
+.tages-div {
     border-top: 1px solid #c6c6c6;
     padding-top: 15px;
     margin-top: 30px;
 }
-.tages-div ul{
+
+.tages-div ul {
     font-size: 0;
     margin: 0;
     padding: 0;
     list-style: none;
 }
-.tages-div ul li{
+
+.tages-div ul li {
     display: inline-block;
 }
-.tages-div ul li a{
+
+.tages-div ul li a {
     font-size: 14px;
-    background-image:url(../images/tag-icon.png);
+    background-image: url(../images/tag-icon.png);
     background-repeat: no-repeat;
     padding: 5px 15px;
     background-position: left center;
@@ -543,12 +574,13 @@ border-radius: 0 !important;
     font-style: italic;
     padding-left: 30px;
 }
-.blog-page-article .blog-posts-div .content-div{
+
+.blog-page-article .blog-posts-div .content-div {
     padding-bottom: 20px;
     /*margin-top: 30px;*/
 }
 
-.section-title2{
+.section-title2 {
     font-size: 30px;
     font-weight: 600;
     border-bottom: 1px solid #c6c6c6;
@@ -556,26 +588,29 @@ border-radius: 0 !important;
     padding: 0 0 5px 0;
 }
 
-
-
-.bio-section .lg-img img{
+.bio-section .lg-img img {
     width: 100%;
     height: auto
 }
-.bio-section .lg-img{
+
+.bio-section .lg-img {
     margin-bottom: 30px;
 }
-.bio-section .bottom-sm-img img{
+
+.bio-section .bottom-sm-img img {
     width: 100%;
     height: auto
 }
-.bio-section .bottom-sm-img .row{
+
+.bio-section .bottom-sm-img .row {
     margin: 0 -8px;
 }
-.bio-section .bottom-sm-img .col-xs-4{
+
+.bio-section .bottom-sm-img .col-xs-4 {
     padding: 0 8px;
 }
-.bio-section .right-side-div h3{
+
+.bio-section .right-side-div h3 {
     font-size: 24px;
     margin: 0;
     font-weight: 600;
@@ -586,28 +621,33 @@ border-radius: 0 !important;
     background-size: 100% 100%;
     color: #fff;
 }
-.bio-section .right-side-div  .block-div{
+
+.bio-section .right-side-div .block-div {
     margin-bottom: 15px;
 }
-.bio-section .right-side-div .content-div{
+
+.bio-section .right-side-div .content-div {
     padding: 15px 0;
 }
 
-.bio-section .right-side-div  table{
+.bio-section .right-side-div table {
     font-size: 20px;
     font-weight: 600;
 }
-.bio-section .right-side-div  table th{
+
+.bio-section .right-side-div table th {
     padding: 1px 0;
     font-weight: 600;
 }
-.bio-section .right-side-div  table td{
+
+.bio-section .right-side-div table td {
     padding: 1px 0;
     color: #e83771;
     font-weight: 900;
 }
-.bio-section .right-side-div  table td.black{
 
+.bio-section .right-side-div table td.black {
+    
     color: #000;
 }
 
@@ -624,50 +664,57 @@ border-radius: 0 !important;
     height: 250px !important;
 }
 
-
-.custom-form-div{
+.custom-form-div {
     background: #2e2e2e;
     padding: 40px;
     color: #fff;
     margin-bottom: 30px;
     -webkit-border-radius: 5px;
--moz-border-radius: 5px;
-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
-.custom-form-div h3{
+
+.custom-form-div h3 {
     margin: 0 0 25px 0;
     font-weight: 600;
     font-size: 32px;
 }
-.custom-form-div .form-control{
-    -webkit-border-radius:0;
--moz-border-radius: 0;
-border-radius: 0;
+
+.custom-form-div .form-control {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
     color: #000;
 }
-.custom-form-div .form-group{
-    margin-bottom:25px;
+
+.custom-form-div .form-group {
+    margin-bottom: 25px;
 }
-.custom-form-div label{
+
+.custom-form-div label {
     margin: 0;
     padding-bottom: 12px;
     font-weight: 400;
     font-size: 15px;
 }
-.w200{
+
+.w200 {
     max-width: 200px;
 }
-.w100{
+
+.w100 {
     max-width: 100px;
 }
-.w150{
+
+.w150 {
     max-width: 160px;
 }
 
-.booking-section .custom-form-div .left-div{
+.booking-section .custom-form-div .left-div {
     padding-right: 40px;
 }
-.custom-form-div .madel-dropdown{
+
+.custom-form-div .madel-dropdown {
     background-color: #2e2e2e;
     color: #fff;
     background-image: url(../images/dropdown-bg.png);
@@ -676,87 +723,86 @@ border-radius: 0;
     background-position: right center;
     padding-right: 50px;
     margin: 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
-
-
 
 /* Customize the label (the c-radio) */
 .c-radio {
-  display: inline-block;
-  position: relative;
-  padding-left: 25px;
-  margin-bottom: 12px;
+    display: inline-block;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
     line-height: 15px;
-  cursor: pointer;
-  font-size: 15px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     padding-right: 20px;
     margin-right: 20px;
 }
 
 /* Hide the browser's default radio button */
 .c-radio input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 /* Create a custom radio button */
 .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 15px;
-  width: 15px;
-  background-color: #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
 }
 
 /* On mouse-over, add a grey background color */
 .c-radio:hover input ~ .checkmark {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
 /* When the radio button is checked, add a blue background */
 .c-radio input:checked ~ .checkmark {
-  background-color: #fff;
+    background-color: #fff;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
 .checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
+    content: "";
+    position: absolute;
+    display: none;
 }
 
 /* Show the indicator (dot/circle) when checked */
 .c-radio input:checked ~ .checkmark:after {
-  display: block;
+    display: block;
 }
 
 /* Style the indicator (dot/circle) */
 .c-radio .checkmark:after {
-  top: 3px;
-  left: 3px;
-  width: 8.8px;
-  height: 8.5px;
-
-  background: #e83771;
+    top: 3px;
+    left: 3px;
+    width: 8.8px;
+    height: 8.5px;
+    
+    background: #e83771;
 }
 
 .custom-form-div .book-btn {
     margin-top: 120px;
 }
-.custom-form-div .book-btn .btn{
+
+.custom-form-div .book-btn .btn {
     background: #e83771;
     font-size: 30px;
     font-weight: 600;
@@ -764,35 +810,35 @@ border-radius: 0;
     color: #fff;
 }
 
-.background-block{
+.background-block {
     background-size: cover;
     background-position: center top;
 }
 
-.booking-section h1{
+.booking-section h1 {
     font-size: 45px;
     font-weight: 600;
     margin: 30px 0 50px 0;
     text-transform: uppercase;
 }
 
-
-
-.apply-section h1{
+.apply-section h1 {
     font-size: 45px;
     font-weight: 600;
     margin: 30px 0 50px 0;
 }
-.apply-section  .below-title{
+
+.apply-section .below-title {
     padding: 0 50px;
     margin-bottom: 50px;
     font-size: 18px;
 }
 
-.browse-file{
+.browse-file {
     position: relative;
 }
-.browse-file input{
+
+.browse-file input {
     position: absolute;
     left: 0;
     top: 0;
@@ -802,27 +848,30 @@ border-radius: 0;
     cursor: pointer;
     z-index: 89
 }
-.browse-file img{
+
+.browse-file img {
     position: absolute;
     right: 10px;
     z-index: 1
-
+    
 }
 
-.disclaimer-div h3{
+.disclaimer-div h3 {
     margin: 0;
     padding: 0;
     font-size: 15px;
     margin-bottom: 10px;
 }
-.disclaimer-div .box-black{
+
+.disclaimer-div .box-black {
     background: #000000;
     padding: 13px;
     font-size: 14px;
     color: #777777;
     line-height: 18px;
 }
-.disclaimer-div .btn{
+
+.disclaimer-div .btn {
     display: block;
     width: 100%;
     background: #e83771;
@@ -833,21 +882,18 @@ border-radius: 0;
     margin-top: 25px;
 }
 
-.disclaimer-div .capcha-div{
+.disclaimer-div .capcha-div {
     margin-top: 25px;
 }
 
-
-
-
 /* style modification */
 .gallery-right-dropdown .form-control {
-        margin-right: 10px;
-    }
+    margin-right: 10px;
+    width:48%;
+}
 
 .gallery-right-dropdown select {
-    border-left: 1px solid
-    #c6c6c6 !important;
+    border-left: 1px solid #c6c6c6 !important;
 }
 
 .gallery-pagination {
@@ -856,14 +902,14 @@ border-radius: 0;
     margin-bottom: 40px;
 }
 
-.container.main_content .pagination>li>span {
+.container.main_content .pagination > li > span {
     background: #e8e7e7;
     color: #000;
     border-color: #000;
     cursor: pointer;
 }
 
-.container.main_content .pagination>li>span:hover {
+.container.main_content .pagination > li > span:hover {
     border-color: #ddd;
 }
 
@@ -883,15 +929,11 @@ border-radius: 0;
     border-color: #ddd;
 }
 
-.container.main_content .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+.container.main_content .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     z-index: 3;
     color: #fff;
     cursor: pointer !important;
 }
-
-
-
-
 
 .bookme a {
     color: #fff;
@@ -900,9 +942,8 @@ border-radius: 0;
     padding: 5px 30px;
 }
 
-
 /* Filter disabled style */
- .must_disable {
+.must_disable {
     /* display: none !important;  to hide title dropdown list*/
     pointer-events: none;
 }
@@ -914,9 +955,8 @@ border-radius: 0;
 }
 
 .booking-alert {
-    display:none;
+    display: none;
 }
-
 
 /* Filter reset*/
 .filter-reset a {
@@ -926,12 +966,13 @@ border-radius: 0;
     font-size: 1.125em;
 }
 
-/* codify */
+
+/*<editor-fold desc="codify">*/
 td.text-left {
     font-weight: 600 !important;
-    color:black !important;
+    color: black !important;
     display: inline-block;
-    vertical-align:top;
+    vertical-align: top;
 }
 
 div.content-div > table {
@@ -943,4 +984,5 @@ button.btn-reset {
     color: #fff;
 }
 
-
+.input-group{display:block;}
+/*</editor-fold>*/

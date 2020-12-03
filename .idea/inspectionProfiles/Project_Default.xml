@@ -69,7 +69,10 @@
       </option>
       <option name="migratedIntoUserSpace" value="true" />
     </inspection_tool>
-    <inspection_tool class="MessDetectorValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="MessDetectorValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="DESIGN" value="true" />
+      <option name="NAMING" value="true" />
+    </inspection_tool>
     <inspection_tool class="PhpCSFixerValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CODING_STANDARD" value="PSR12" />
@@ -133,6 +136,11 @@
           <option value="zendframework/zend-test" />
         </list>
       </option>
+    </inspection_tool>
+    <inspection_tool class="StandardJS" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="W3CssValidation" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCssVersion" value="css3svg" />
+      <option name="myIgnoreVendorSpecificProperties" value="false" />
     </inspection_tool>
   </profile>
 </component>

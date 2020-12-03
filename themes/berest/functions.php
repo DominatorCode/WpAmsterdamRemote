@@ -1,4 +1,5 @@
 <?php
+
 /**
  * berest functions and definitions
  *
@@ -244,13 +245,13 @@ function args_generator($term_id, $taxonomy = 'statistics')
         );
 
         foreach ($parent_terms as $key => $value) {
-            array_push($args, array(
+            $args[] = array(
                 'taxonomy' => $taxonomy,
                 'terms' => $value->term_id, //
                 'field' => 'term_id',
                 'operator' => 'AND',
                 'include_children' => true,
-            ));
+            );
         }
 
         return $args;
@@ -340,7 +341,7 @@ function GalleryFeed()
         $max_price = sanitize_text_field($_POST['max_price']);
 
         $cur_page = $page;
-        $page -= 1;
+        --$page;
         // Set the number of results to display
         $per_page = 10;
         $previous_btn = true;
@@ -376,7 +377,7 @@ function GalleryFeed()
             array_push($tax_query, $body_args);
         }
         if (!empty($service)) {
-            array_push($tax_query, $service_args);
+            $tax_query[] = $service_args;
         }
 
         $meta_query = array(
@@ -384,11 +385,18 @@ function GalleryFeed()
         );
 
         if (!empty($min_price)) {
-            $add_hour_in = args_generator_field($min_price, $max_price, 'add_hour_in',
-                'add_hour_out', 'one_hour_in',
-                'one_hour_out', 'dinner_date_in',
-                'dinner_date_out', 'overnight_in',
-                'overnight_out');
+            $add_hour_in = args_generator_field(
+                $min_price,
+                $max_price,
+                'add_hour_in',
+                'add_hour_out',
+                'one_hour_in',
+                'one_hour_out',
+                'dinner_date_in',
+                'dinner_date_out',
+                'overnight_in',
+                'overnight_out'
+            );
             $meta_query[] = $add_hour_in;
         }
 
@@ -541,8 +549,8 @@ function GalleryFeed()
         $navigation .= '</select>';
 
         // $navigation .= '<select class="form-control height-filter '.isEmpty($height_list).'">
-        //        	<option value="0" >Height</option>';
-        //      	 	foreach ($height_list as $key => $value) $navigation .= ' <option value="'.$key.'" '. isSelected($key, $height) .'>'.$value.'</option>';
+        //          <option value="0" >Height</option>';
+        //              foreach ($height_list as $key => $value) $navigation .= ' <option value="'.$key.'" '. isSelected($key, $height) .'>'.$value.'</option>';
         // $navigation .= '</select>';
 
         $navigation .= '<select class="form-control bust-filter ' . isEmpty($bust_list) . '">
@@ -796,7 +804,7 @@ function BookNow()
 		';
 
         $headers = array('Content-Type: text/html; charset=UTF-8');
-        // 		$headers[] = 'Cc: skyjay03k@gmail.com';
+        //      $headers[] = 'Cc: skyjay03k@gmail.com';
         $headers[] = 'From: Website <me@example.net>';
 
         wp_mail($to, $subject, $body, $headers);
@@ -816,7 +824,8 @@ function move_author_to_publish_metabox()
     global $post_ID;
     $post = get_post($post_ID);
     echo <<<'TAG'
-<div id="author" class="misc-pub-section" style="border-top-style:solid; border-top-width:1px; border-top-color:#eeeeee; border-bottom-width:0;">Author: 
+<div id="author" class="misc-pub-section" style="border-top-style:solid;
+border-top-width:1px; border-top-color:#eeeeee; border-bottom-width:0;">Author:
 TAG;
     post_author_meta_box($post);
     echo '</div>';
@@ -946,3 +955,4 @@ function my_theme_customize_register($wp_customize)
 /*$headers = array('Content-Type: text/html; charset=UTF-8');
 $html = 'Test message message test test test';
 wp_mail("ceroff@mail.ru", "Test from Escort", $html, $headers);*/
+

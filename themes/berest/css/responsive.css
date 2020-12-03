@@ -561,3 +561,12 @@ and (orientation: portrait) {
         width: 50%;
     }
 }
+
+/*<editor-fold desc="LT code">*/
+
+@media (min-width: 768px) {
+    .input-group{display:flex;}
+}
+
+
+/*</editor-fold>*/
