@@ -160,8 +160,20 @@ function berest_scripts()
 
     wp_enqueue_script('Script JS', get_template_directory_uri() . '/js/scripts.js', array(), true);
 
-    wp_enqueue_script('berest-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true);
-    wp_enqueue_script('berest-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true);
+    wp_enqueue_script(
+        'berest-navigation',
+        get_template_directory_uri() . '/js/navigation.js',
+        array(),
+        '20151215',
+        true
+    );
+    wp_enqueue_script(
+        'berest-skip-link-focus-fix',
+        get_template_directory_uri() . '/js/skip-link-focus-fix.js',
+        array(),
+        '20151215',
+        true
+    );
 
     // UPDATE add option to disable comments
     $comments_enable = false;
@@ -599,15 +611,16 @@ function GalleryFeed()
         foreach ($content as $key => $value) {
             $output .= $value;
         }
-
-        echo json_encode(
-            array(
+    
+        try {
+            echo json_encode(array(
                 'navigation' => $navigation,
                 'content' => $output,
                 'pages' => $pag_container
-            )
-        );
-
+            ), JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+        }
+    
         wp_reset_postdata();
         die;
     }
@@ -955,4 +968,3 @@ function my_theme_customize_register($wp_customize)
 /*$headers = array('Content-Type: text/html; charset=UTF-8');
 $html = 'Test message message test test test';
 wp_mail("ceroff@mail.ru", "Test from Escort", $html, $headers);*/
-
