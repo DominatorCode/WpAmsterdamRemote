@@ -1,94 +1,121 @@
 <?php
 
+namespace booking;
+
 use DirectoryCustomFields\ConfigurationParameters;
 
 require_once 'acf-local-fields/ConfigurationParameters.php';
 
 /**
- * Class BookingForm
+ * Sends submitted form data from client to admin email
  */
 class BookingForm
 {
-
-	public $email_from;
-	public $phone;
-	public $name_person;
-	public $location;
-	public $message;
-
-	public $name_model;
-	public $date;
-
-	public $duration;
-	public $contact_type;
-
-	/**
-	 * BookingForm constructor.
-	 * @param $pMail
-	 * @param $pPhone
-	 */
-	public function __construct($pMail, $pPhone)
-	{
-		$this->email_from = $pMail;
-		$this->phone = $pPhone;
-	}
-
-
-	public function sendMail(): string
-	{
-		$result = $this->checkInput();
-		$result = 'OK';
-		if ($result === 'OK') {
-			$result = '';
-
-			$to = ConfigurationParameters::$email_booking;
-
-			$headers =
-				"MIME-Version: 1.0\r\n" .
-				"Reply-To: \"$this->name_person\" <$this->email_from\r\n" .
-				"Content-Type: text/plain; charset=\"" . get_settings('blog_charset') . "\"\r\n";
-			if (!empty($this->email_from)) {
-				$headers .= "From: " . get_bloginfo('name') . " - $this->name_person <$this->email_from\r\n";
-			} else if (!empty($this->phone)) {
-				$headers .= "From: " . get_bloginfo('name') . " - $this->name_person <$this->phone\r\n";
-			}
-
-			$full_msg =
-				"Name: $this->name_person\r\n" .
-				"Email: $this->email_from\r\n" .
-				'Subject: ' . ConfigurationParameters::$name_booking_subject . "\r\n\r\n" .
-				wordwrap($this->message, 76, "\r\n") . "\r\n\r\n" .
-				'Referer: ' . $_SERVER['HTTP_REFERER'] . "\r\n" .
-				'Browser: ' . $_SERVER['HTTP_USER_AGENT'] . "\r\n";
-
-			if (wp_mail($to, ConfigurationParameters::$name_booking_subject, $full_msg, array('Content-Type: text/html; charset=UTF-8'))) {
-				$result = 'msg_ok';
-			} else {
-				$result = 'msg_err';
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * Checks form data
-	 * @return string
-	 */
-	private function checkInput(): string
-	{
-
-		$error = array();
-		if (empty($this->phone)) {
-			$error[] = __('Phone', 'cuf-lang');
-		}
-		if (!is_email($this->email_from)) {
-			$error[] = __('Email', 'cuf-lang');
-		}
-
-		if (!empty($error)) {
-			return __('Check these fields:', 'cuf-lang') . ' ' . implode(', ', $error);
-		}
-
-		return 'OK';
-	}
+    public $email_person;
+    public $phone;
+    public $name_person;
+    public $location;
+    public $message;
+    
+    public $name_model;
+    public $date;
+    
+    public $duration;
+    public $contact_type;
+    
+    /**
+     * BookingForm constructor.
+     * @param $pMail
+     * @param $pPhone
+     */
+    public function __construct($pMail, $pPhone)
+    {
+        $this->email_person = $pMail;
+        $this->phone = $pPhone;
+    }
+    
+    
+    public function sendMail() : string
+    {
+        // check if data contains some callback info
+        $result = $this->checkInput();
+    
+        if (empty(ConfigurationParameters::$email_booking)) {
+            ConfigurationParameters::$email_booking = get_theme_mod('email-admin');
+        }
+        
+        // message text
+        if ($result === 'OK') {
+            $message_mail = '<html><body>';
+            $message_mail .= '<h1>Client data</h1>';
+            $message_mail .= '<table style="border-color: #666;" >';
+            $message_mail .= "<tr style='background: #eee;'>" .
+                "<td><strong>Name:</strong> </td><td>" . $this->name_person . "</td></tr>";
+            $message_mail .= "<tr><td><strong>Email:</strong> </td><td>" . $this->email_person . "</td></tr>";
+            $message_mail .= "<tr><td><strong>Phone:</strong> </td><td>" .
+                $this->phone . "</td></tr>";
+            $message_mail .= "<tr><td><strong>Location:</strong> </td><td>" . $this->location . "</td></tr>";
+            $message_mail .= "<tr><td><strong>Client message:</strong> </td><td>" . $this->message . "</td></tr>";
+            $message_mail .= "</table>";
+            $message_mail .= "<br><h1>Model info</h1>";
+            $message_mail .= '<table style="border-color: #666;" >';
+            
+            $message_mail .= "<tr><td><strong>Model name:</strong> </td><td>" .
+                $this->name_model . "</td></tr>";
+            
+            $message_mail .= "<tr><td><strong>Date:</strong> </td><td>" .
+                $this->date . "</td></tr>";
+            
+            $message_mail .= "<tr><td><strong>Duration:</strong> </td><td>" .
+                $this->duration . "</td></tr>";
+            
+            $message_mail .= "<tr><td><strong>Callback:</strong> </td><td>" .
+                $this->contact_type . "</td></tr>";
+            $message_mail .= "</table>";
+            $message_mail .= "</body></html>";
+            
+            // mail headers
+            $headers = array('Content-Type: text/html; charset=UTF-8',
+                'Reply-To: ' . $this->name_person . ' <' . $this->email_person . '>',
+                "From: " . get_bloginfo('name') );
+            
+            if (wp_mail(
+                ConfigurationParameters::$email_booking,
+                ConfigurationParameters::$name_booking_subject,
+                $message_mail,
+                $headers
+            )) {
+                $result = 'msg_ok';
+            } else {
+                $result = 'msg_err';
+            }
+        }
+        return $result;
+    }
+    
+    /**
+     * Checks form data
+     * @return string
+     */
+    private function checkInput() : string
+    {
+        $error = array();
+        if (!preg_match('~^\([d]{3}\)[- ][d]{3}-[d]{4}$~', $this->phone)) {
+            $error[] = __('Phone', 'cuf-lang');
+        }
+        if (!is_email($this->email_person)) {
+            $this->email_person = "";
+            $error[] = __('Email', 'cuf-lang');
+        }
+        
+        if (empty($this->name_person)) {
+            $this->name_person = 'Anonymous';
+        }
+        
+        if (count($error) > 1) {
+            return __('Check these fields:', 'cuf-lang') . ' ' . implode(', ', $error);
+        }
+        
+        return 'OK';
+    }
 }

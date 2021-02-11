@@ -17,7 +17,6 @@
     /*.custom-navbar ul#menu-menu.nav.navbar-nav {
         padding-left: 245px !important;
     }*/
-    
     .gallery-right-dropdown {
         text-align: center;
     }
@@ -97,11 +96,16 @@
         margin-right: 20px;
     }
     
-    
-    
+    /*<editor-fold desc="LT code">*/
     .header-right .btn.call {
         padding: 0 8px;
     }
+    
+    .gallery-right-dropdown .form-control {
+        margin-bottom: 10px;
+    }
+    
+    /*</editor-fold>*/
 }
 
 /* Ipad Pro */
@@ -159,7 +163,6 @@ and (orientation: portrait) {
     /*.custom-navbar ul#menu-menu.nav.navbar-nav {
         padding-left: 140px !important;
     }*/
-    
     .custom-navbar .nav > li > a {
         padding: 0 10px;
     }
@@ -460,6 +463,25 @@ and (orientation: portrait) {
         margin-top: 580px;
     }
     
+    /*<editor-fold desc="LT code">*/
+    .gallery-right-dropdown select {
+        width: 48%;
+        border: 1px solid #ddd;
+        margin-top: 2px;
+    }
+    
+    .form-inline .form-group { /*COMMENT*/
+        width: 48%;
+    }
+    
+    
+    
+    /*  .gallery-right-dropdown {
+          margin-right: -1%;
+          margin-left: -1%;
+      }*/
+    /*</editor-fold>*/
+    
 }
 
 @media only screen and (max-width: 640px) {
@@ -488,24 +510,11 @@ and (orientation: portrait) {
     }
     
     .blog-posts-div .content-div {
-        padding: 20px;
-        padding-bottom: 60px;
-        padding-right: 50px;
+        padding: 20px 50px 60px 20px;
     }
     
     .blog-posts-div h2 {
         font-size: 26px;
-    }
-    
-    .gallery-right-dropdown {
-        margin-right: -1%;
-        margin-left: -1%;
-    }
-    
-    .gallery-right-dropdown select {
-        width: 48%;
-        border: 1px solid #ddd;
-        margin: 1%;
     }
     
 }
@@ -544,19 +553,53 @@ and (orientation: portrait) {
 
 /*<editor-fold desc="LT code">*/
 
-@media (min-width: 768px) {
-    .input-group {
-        display: flex;
+/*<editor-fold desc="small device">*/
+@media (min-width: 280px) and (max-width: 767px) {
+    .form-inline .form-group { /*COMMENT*/
+        display: inline-block;
+    }
+    
+    .gallery-right-dropdown .form-control {
+        width: 50%;
+        
     }
 }
+/*</editor-fold>*/
 
-@media (min-width: 767px) and (max-width: 1200px) {
-    .navbar-brand>img {
+@media (min-width: 768px) and (max-width: 1200px) {
+    .navbar-brand > img {
         max-width: 11vw;
         display: block;
         width: 100%;
         margin-top: 6px;
     }
+    
 }
+
+/*<editor-fold desc="Middle screen">*/
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .form-inline .form-group { /*COMMENT*/
+        width: 115px;
+    }
+    
+    .gallery-right-dropdown .form-control {
+        width: 30%;
+        margin-right: 0;
+        
+    }
+}
+
+/*<editor-fold desc="wider then Middle screen">*/
+@media (min-width: 992px) {
+    .gallery-right-dropdown .form-control {
+        width: auto;
+        
+    }
+}
+/*</editor-fold>*/
+
+
+/*</editor-fold>*/
 
 /*</editor-fold>*/

@@ -185,7 +185,7 @@ class AcfRootGroupField extends AcfBaseField
 			$postfix_out = ConfigurationParameters::$name_postfix_rates_out;
 
 			// Get Rates term child data object
-			$obj_rates = ConfigurationParameters::GetTermsList($arr_term_rates_data['Taxonomy'],
+			$obj_rates = ConfigurationParameters::getTermsList($arr_term_rates_data['Taxonomy'],
 				$arr_term_rates_data['Id']);
 
 			// get child names and labels

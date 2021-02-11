@@ -156,7 +156,8 @@ function berest_scripts()
 
     wp_enqueue_script('jQuery', get_template_directory_uri() . '/js/jquery.min.js', array(), true);
     wp_enqueue_script('AOS JS', get_template_directory_uri() . '/js/aos.js', array(), true);
-    wp_enqueue_script('Bootstrap JS', get_template_directory_uri() . '/js/bootstrap.min.js', array(), '3.3.7', true);
+    wp_enqueue_script('Bootstrap JS', get_template_directory_uri() .
+        '/js/bootstrap.min.js', array('jquery'), '3.3.7', true);
 
     wp_enqueue_script('Script JS', get_template_directory_uri() . '/js/scripts.js', array(), true);
 
@@ -225,6 +226,22 @@ function my_enqueue()
     if (is_page('gallery')) {
         wp_enqueue_script('gallery', get_template_directory_uri() . '/js/gallery.js', array(), '1.0', true);
         wp_localize_script('gallery', 'my_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
+        
+        // disable BS 3 and enable 4
+       /* wp_dequeue_style('Bootstrap CSS');
+        wp_deregister_style('Bootstrap CSS');
+        
+        wp_dequeue_script('Bootstrap JS');
+        wp_deregister_script('Bootstrap JS');
+    
+        wp_enqueue_style('Bootstrap CSS', get_template_directory_uri() . '/css/bootstrap4/bootstrap.min.css');
+        wp_enqueue_script(
+            'Bootstrap JS',
+            get_template_directory_uri() . '/js/bootstrap4/bootstrap.min.js',
+            array('jquery'),
+            '',
+            true
+        );*/
     }
 
     if (is_page('bookings')) {
@@ -374,7 +391,7 @@ function GalleryFeed()
         );
 
         if (!empty($age)) {
-            array_push($tax_query, $age_args);
+            $tax_query[] = $age_args;
         }
         if (!empty($hair)) {
             array_push($tax_query, $hair_args);
@@ -517,9 +534,9 @@ function GalleryFeed()
 
         if ($previous_btn && $cur_page > 1) {
             $pre = $cur_page - 1;
-            $pag_container .= "<li p='$pre' class='active'><span aria-hidden=\"true\"><img src=\"https://www.berlinescort.com/wp-content/themes/berest/images/left-arrow.png\"></span></li>";
+            $pag_container .= "<li p='$pre' class='active'><span aria-hidden=\"true\"><img src=\"https://www.eroticlondonescorts.com/wp-content/themes/berest/images/left-arrow.png\"></span></li>";
         } elseif ($previous_btn) {
-            $pag_container .= "<li class='inactive'><span aria-hidden=\"true\"><img src=\"https://www.berlinescort.com/wp-content/themes/berest/images/left-arrow.png\"></span></li>";
+            $pag_container .= "<li class='inactive'><span aria-hidden=\"true\"><img src=\"https://www.eroticlondonescorts.com/wp-content/themes/berest/images/left-arrow.png\"></span></li>";
         }
         for ($i = $start_loop; $i <= $end_loop; $i++) {
             if ($cur_page == $i) {
@@ -531,9 +548,9 @@ function GalleryFeed()
 
         if ($next_btn && $cur_page < $no_of_paginations) {
             $nex = $cur_page + 1;
-            $pag_container .= "<li p='$nex' class='active'><span aria-hidden=\"true\"><img src=\"https://www.berlinescort.com/wp-content/themes/berest/images/right-arrow.png\"></span></li>";
+            $pag_container .= "<li p='$nex' class='active'><span aria-hidden=\"true\"><img src=\"https://www.eroticlondonescorts.com/wp-content/themes/berest/images/right-arrow.png\"></span></li>";
         } elseif ($next_btn) {
-            $pag_container .= "<li class='inactive'><span aria-hidden=\"true\"><img src=\"https://www.berlinescort.com/wp-content/themes/berest/images/right-arrow.png\"></span></li>";
+            $pag_container .= "<li class='inactive'><span aria-hidden=\"true\"><img src=\"https://www.eroticlondonescorts.com/wp-content/themes/berest/images/right-arrow.png\"></span></li>";
         }
 
         $output = '';
@@ -545,46 +562,52 @@ function GalleryFeed()
         $bust_list = getList(8, 'statistics', $args_count);
         $body_list = getList(68, 'statistics', $args_count);
         $services_list = getList(0, 'services', $args_count);
+        
+        // parent div constant
+        $div_form_group_start = '';
+        $div_form_group_end ='</select>';
 
-        $navigation .= '<select class="form-control age-filter ' . isEmpty($age_list) . '">
+        $navigation .= $div_form_group_start. '<select class="form-control age-filter ' . isEmpty($age_list) . '">
 				        	<option value="0" >By Age</option>';
         foreach ($age_list as $key => $value) {
             $navigation .= ' <option value="' . $key . '" ' . isSelected($key, $age) . '>' . $value . '</option>';
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
-        $navigation .= '<select class="form-control hair-filter ' . isEmpty($hair_list) . '">
+        $navigation .= $div_form_group_start.'<select class="form-control hair-filter ' . isEmpty($hair_list) . '">
 				        	<option value="0" >Hair</option>';
         foreach ($hair_list as $key => $value) {
             $navigation .= ' <option value="' . $key . '" ' . isSelected($key, $hair) . '>' . $value . '</option>';
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
         // $navigation .= '<select class="form-control height-filter '.isEmpty($height_list).'">
         //          <option value="0" >Height</option>';
         //              foreach ($height_list as $key => $value) $navigation .= ' <option value="'.$key.'" '. isSelected($key, $height) .'>'.$value.'</option>';
         // $navigation .= '</select>';
+        
+        
 
-        $navigation .= '<select class="form-control bust-filter ' . isEmpty($bust_list) . '">
+        $navigation .= $div_form_group_start.'<select class="form-control bust-filter ' . isEmpty($bust_list) . '">
 				        	<option value="0" >Bust</option>';
         foreach ($bust_list as $key => $value) {
             $navigation .= ' <option value="' . $key . '" ' . isSelected($key, $bust) . '>' . $value . '</option>';
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
-        $navigation .= '<select class="form-control body-filter ' . isEmpty($body_list) . '">
+        $navigation .= $div_form_group_start.'<select class="form-control body-filter ' . isEmpty($body_list) . '">
 				        	<option value="0" >Body</option>';
         foreach ($body_list as $key => $value) {
             $navigation .= ' <option value="' . $key . '" ' . isSelected($key, $body) . '>' . $value . '</option>';
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
-        $navigation .= '<select class="form-control service-filter ' . isEmpty($services_list) . '">
+        $navigation .= $div_form_group_start.'<select class="form-control service-filter ' . isEmpty($services_list) . '">
 				        	<option value="0" >Service</option>';
         foreach ($services_list as $key => $value) {
             $navigation .= ' <option value="' . $key . '" ' . isSelected($key, $service) . '>' . $value . '</option>';
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
         $priceRange = array();
 
@@ -593,7 +616,7 @@ function GalleryFeed()
         array_push($priceRange, array('min' => 350, 'max' => 500));
         array_push($priceRange, array('min' => 500, 'max' => 1000));
 
-        $navigation .= '<select class="form-control price-filter ' . isEmptyPrice($priceRange, $args_count) . '">
+        $navigation .= $div_form_group_start.'<select class="form-control price-filter ' . isEmptyPrice($priceRange, $args_count) . '">
 				        	<option value="0" >Price</option>';
         foreach ($priceRange as $key => $value) {
             $count = getPriceCount($args_count, $value['min'], $value['max']);
@@ -606,7 +629,7 @@ function GalleryFeed()
 							</option>';
             }
         }
-        $navigation .= '</select>';
+        $navigation .= $div_form_group_end;
 
         foreach ($content as $key => $value) {
             $output .= $value;
@@ -914,9 +937,6 @@ function acf_set_featured_image_tt($value, $post_id, $field)
 
 //<editor-fold desc="Customizer">
 add_action('customize_register', 'my_theme_customize_register');
-
-// init values from theme settings
-ConfigurationParameters::$count_pagination_posts = get_theme_mod('pagination');
 
 function my_theme_customize_register($wp_customize)
 {

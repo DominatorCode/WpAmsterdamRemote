@@ -1,0 +1,14 @@
+{
+  "name": "vendor_name/escort_directory",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Ajiewa",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+  }
+}

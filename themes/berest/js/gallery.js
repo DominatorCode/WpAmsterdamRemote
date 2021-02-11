@@ -1,5 +1,5 @@
 jQuery(document).ready(function () {
-
+    
     function galleryFeed($page = 1)
     {
         // body...
@@ -13,9 +13,9 @@ jQuery(document).ready(function () {
             var min_price = $('.price-filter').children("option:selected").attr('min-value');
             var max_price = $('.price-filter').children("option:selected").attr('max-value');
         } else {
-            $page = 1;}
-
-
+            $page = 1;
+        }
+        
         jQuery.ajax({
             type: 'POST',
             url: my_ajax_object.ajax_url,
@@ -32,41 +32,51 @@ jQuery(document).ready(function () {
                 max_price: max_price,
             },
             success: function (data, textStatus, XMLHttpRequest) {
-
+                
                 //debugger;
                 let json_response = JSON.parse(data);
-
+                
                 jQuery(".hot-modal-section .content-holder").html('');
                 jQuery(".hot-modal-section .content-holder").append(json_response.content);
-
-                jQuery(".gallery-right-dropdown").html(json_response.navigation).append('<span class="input-group-btn">\n' +
+                
+                let buttonCode = '<div class="form-group ">\n' +
+                    '\t     <button type="button" class="btn btn-default btn-reset">Reset</button>\n' +
+                    '\t   </div>';
+                
+                let oldButton = '<span class="input-group-btn">\n' +
                     '    <button class="btn btn-default btn-reset" type="button" ' +
                     'tabindex="-1">Reset</button>\n' +
-                    '  </span>');
-
+                    '  </span>';
+    
+                //<editor-fold desc="Debug">
+                jQuery(".gallery-right-dropdown").html(json_response.navigation).append(buttonCode);
+             
+                
+                //</editor-fold>
+                
                 $(".btn-reset").on('click', function () {
                     galleryFeed(-1);
                 });
-
+                
                 jQuery(".pagination-div .pagination").html('');
                 jQuery(".pagination-div .pagination").append(json_response.pages);
-
+                
                 $('.pagination-div .pagination .active').off('click').click(function () {
                     galleryFeed($(this).attr('p'));
                 });
-
+                
                 $('.gallery-right-dropdown select.form-control').off('change').change(function () {
                     galleryFeed();
                 });
-
+                
             },
             error: function (MLHttpRequest, textStatus, errorThrown) {
                 alert(errorThrown);
             }
         });
-
+        
     }
-
+    
     galleryFeed();
-
+    
 });

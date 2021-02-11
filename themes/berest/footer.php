@@ -10,7 +10,7 @@
  */
 
 ?>
-	<footer  style="background-image: url('https://www.berlinescort.com/wp-content/themes/berest/images/welcom-bg.jpg')" data-aos="fade-in">
+	<footer  style="background-image: url('https://www.eroticlondonescorts.com/wp-content/themes/berest/images/welcom-bg.jpg')" data-aos="fade-in">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4">

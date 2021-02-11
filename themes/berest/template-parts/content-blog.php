@@ -20,7 +20,7 @@
 						<div class="row">
 							<div class="col-sm-4">
 								<div class="img-div"
-								     style="background-image: url(https://berlinescort.com/wp-content/uploads/2019/06/b-post-img.png)">
+								     style="background-image: url(https://www.eroticlondonescorts.com/wp-content/uploads/2019/06/b-post-img.png)">
 									<a href="#"><img loading="lazy"
 									                 src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'medium_size'); ?>"
 									                 width="427" height="255" alt=""> </a>
@@ -30,7 +30,7 @@
 								<div class="content-div">
 									<div class="inner-div">
 										<div class="right-icon"><img loading="lazy"
-										                             src="https://berlinescort.com/wp-content/themes/berest/images/edit-icon.png"
+										                             src="https://www.eroticlondonescorts.com/wp-content/themes/berest/images/edit-icon.png"
 										                             width="33" height="30" alt=""></div>
 										<header class="entry-header">
 											<?php the_title('<h2 class="entry-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">',

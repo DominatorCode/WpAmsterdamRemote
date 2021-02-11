@@ -18,7 +18,8 @@ use DirectoryCustomFields\RawFrontPageDisplay as RawCF;
 <article>
     <section class="bio-section paddingTB50" data-aos="fade-in">
         <div class="container">
-            <div class="bookme"><a href="#" onclick="booking.redirect(event, '<?php echo get_the_ID(); ?>')">BOOK ME</a>
+            <div class="bookme">
+                <a href="https://www.eroticlondonescorts.com/bookings/?model_id=<?php echo $post->ID  ?>" >BOOK ME</a>
             </div>
             <h2 class="section-title2"><span><?php the_title(); ?>'s PROFILE</span></h2>
             <div class="row">
@@ -131,7 +132,7 @@ use DirectoryCustomFields\RawFrontPageDisplay as RawCF;
 
                                     //<editor-fold desc="Display Rates data">
                                     // Get list of Rates terms
-                                    $list_terms = ConfigurationParameters::GetTermsList(
+                                    $list_terms = ConfigurationParameters::getTermsList(
                                         ConfigurationParameters::$data_terms_input_range['Taxonomy'],
                                         ConfigurationParameters::$data_terms_input_range['Id']
                                     );

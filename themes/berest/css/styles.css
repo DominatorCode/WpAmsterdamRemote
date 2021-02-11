@@ -889,7 +889,8 @@ footer .container {
 /* style modification */
 .gallery-right-dropdown .form-control {
     margin-right: 10px;
-    width:48%;
+    
+    width:100%;
 }
 
 .gallery-right-dropdown select {
@@ -984,5 +985,19 @@ button.btn-reset {
     color: #fff;
 }
 
-.input-group{display:block;}
+/*.form-inline .form-group {
+    margin-right: 20px;
+}*/
+
+/*.centered-form {
+    margin: 0 auto;
+    width: 955px;
+    text-align: center;
+}*/
+
+.justify-content-center {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+}
+
 /*</editor-fold>*/

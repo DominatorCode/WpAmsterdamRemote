@@ -42,8 +42,6 @@ get_header();
 
 ?>
     
-    <div class="test-output"></div>
-    
     <div class="container main_content">
         <div class="row">
             <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -52,12 +50,9 @@ get_header();
                     <section>
                         <div class="logo-div" data-aos="fade-in">
                             <div class="container">
-                                <div class="row justify-content-md-center">
-                                    <div class="col-lg-10">
-                                        <div class="input-group gallery-right-dropdown">
-                                        
-                                        </div>
-                                        
+                                <div class="row">
+                                    <div class="form-inline gallery-right-dropdown justify-content-center">
+
                                     </div>
                                 </div>
                             </div>

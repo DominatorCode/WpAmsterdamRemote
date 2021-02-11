@@ -41,6 +41,7 @@
                     <div class="col pull-right">
                         <div class="header-right">
                             <?php
+                            // not valid BS layout, see https://getbootstrap.com/docs/5.0/components/navbar/#text
                             if (is_active_sidebar('header')) {
                                 dynamic_sidebar('header');
                             }
