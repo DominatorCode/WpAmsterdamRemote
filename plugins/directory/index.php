@@ -1,10 +1,9 @@
 <?php 
 /*
-* Plugin Name: Escort Directory 
-* Description: A simple Wordpress plugin that allow user to create profile page for escort
+* Plugin Name: Service Directory 
+* Description: A simple Wordpress plugin that allow user to create profile page for services
 * Version: 1.0.1
-* Author: Meretrix Media
-* Author URI: http://berlinescort.com
+* Author: Alexius Code
 * Text Domain: directory Test
 */
 
